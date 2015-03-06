@@ -13,7 +13,7 @@ require_once 'include/common.php';
        "table_Users_In_Groups"=>"Users_In_Groups_2",
    );
     $func=new Functions();
-    $func->method_Get_Groupinfo($connect, $tables);
+   // $func->method_Get_Groupinfo($connect, $tables);
 
   
   
