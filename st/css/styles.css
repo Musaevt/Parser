@@ -1,0 +1,74 @@
+@charset "utf-8";
+
+body{
+background-image: 
+url('/st/img/texture.png');
+background-repeat: repeat;
+}
+header{
+    height: 100px;
+    margin: 20px;
+    background: url('http://i.stack.imgur.com/2AWYj.jpg');
+    border-radius: 10px;
+    
+}
+
+footer{
+  //  display: block;
+  
+    margin: 20px;
+    height: 80px;
+    bottom: 10px;
+    background: url('http://seamlesspatternchecker.com/hash/thumbs/e/b/4/b/eb4b-vector-ornate-floral-background-seamless-pattern-with-flowers-gorgeous-floral-texture-which-can-be-used-166540697.jpg') repeat ;
+    border-radius: 10px;
+    position: relative;
+}
+.bottom{
+    position: relative;
+    padding-top: 40px;
+    text-align: center;
+    color:whitesmoke;
+   
+}
+.footer_element{
+    display: inline-block;
+    margin: 0px 10px 0 10px;
+ }
+ .footer_element a{
+     text-decoration: none;
+     color: whitesmoke;
+  }
+  .container{
+      display: block;
+      margin: 20px auto;
+      padding: 0px auto;
+      width: 70%;
+      height: 500px;
+      
+  }
+ .vk_image{
+    border-radius: 3px;
+    height: 30px;
+    width: 30px;
+    border-radius: 7px;
+    box-shadow: 5px 3px 20px white;
+    background:  url('/st/img/black.png') center no-repeat;
+}
+.vk_groups{
+    color: #3868ab;
+   
+    
+}
+.groups input{
+   display: block;
+   margin: 5px 0 0 0;
+   
+}
+.vk_groups_submit{
+    display: block;
+    margin: 20px 0 0;
+    border-radius: 15px;
+    height: 30px;
+    box-shadow: 2px 3px 4px black;
+    background: #f9fafc;
+}

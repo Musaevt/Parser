@@ -1,4 +1,5 @@
 <?php
+namespace Library\Models;
 class VK_Users_In_Groups{
     public $gid;
     public $uid;

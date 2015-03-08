@@ -1,4 +1,5 @@
 <?php
+namespace Library\Models;
 class Functions{
         
 /*Получение всех полей пользователя    

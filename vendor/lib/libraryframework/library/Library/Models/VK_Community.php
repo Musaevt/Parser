@@ -1,4 +1,5 @@
 <?php
+namespace Library\Models;
 class VK_Community{
 private $gid;
 private $name;
@@ -7,6 +8,7 @@ private $is_closed;
 private $deactivated;
 private $type;
 private $photo_big;
+private $photo_medium;
 private $start_date;
 private $city;
 private $country;
@@ -211,33 +213,39 @@ public static function get_top_groups($connection,$table,$fields=array()){
 }
 
 public function get_JSON($param=array()){
+   $answer=array();
    $arr=array(
        'gid'          =>(isset($this->gid))?$this->gid:"",
        'name'         =>(isset($this->name))?$this->name:"",
        'screen_name'  =>(isset($this->screen_name))?$this->screen_name:"",
-//       'is_closed'    =>(isset($this->is_closed))?$this->is_closed:"",
-//       'deactivated'  =>(isset($this->deactivated))?$this->deactivated:"",
-//        'type'        =>(isset($this->type))?$this->type:"",
-//        'photo_big'   =>(isset($this->photo_big))?$this->photo_big:"",
-//        'start_date'  =>(isset($this->start_date))?$this->start_date:"",
-//        'city'        =>(isset($this->city))?$this->city:"",
-//        'country'     =>(isset($this->country))?$this->country:"",
-//        'description' =>(isset($this->description))?$this->description:"",
-//        'wiki_page'   =>(isset($this->wiki_page))?$this->wiki_page:"",
+       'is_closed'    =>(isset($this->is_closed))?$this->is_closed:"",
+       'deactivated'  =>(isset($this->deactivated))?$this->deactivated:"",
+        'type'        =>(isset($this->type))?$this->type:"",
+        'photo_big'   =>(isset($this->photo_big))?$this->photo_big:"",
+       'photo_medium' =>(isset($this->photo_medium))?$this->photo_medium:"",
+        'start_date'  =>(isset($this->start_date))?$this->start_date:"",
+        'city'        =>(isset($this->city))?$this->city:"",
+        'country'     =>(isset($this->country))?$this->country:"",
+        'description' =>(isset($this->description))?$this->description:"",
+        'wiki_page'   =>(isset($this->wiki_page))?$this->wiki_page:"",
         'members_count'=>(isset($this->members_count))?$this->members_count:"",
-//        'status'      =>(isset($this->status))?$this->status:"",
-//        'contacts'    =>(isset($this->contacts))?$this->contacts:"",
-//         'links'      =>(isset($this->links))?$this->links:"",
-//        'verified'    =>(isset($this->verified))?$this->verified:"",
-//        'site'        =>(isset($this->site))?$this->site:"",
+        'status'      =>(isset($this->status))?$this->status:"",
+        'contacts'    =>(isset($this->contacts))?$this->contacts:"",
+         'links'      =>(isset($this->links))?$this->links:"",
+        'verified'    =>(isset($this->verified))?$this->verified:"",
+        'site'        =>(isset($this->site))?$this->site:"",
        );
-       foreach ($param as $key=>$value)
+       
+       foreach ($param as $value)
        {
-           $arr[$key]=$value;
+           if(array_key_exists($value, $arr))
+              $arr[$value]=$arr[$value];
        }
+        if(count($param)==0)
+            $answer=$arr;
    
       // return json_encode($arr,JSON_UNESCAPED_UNICODE);
-      return $arr;
+      return $answer;
 }
 
 }

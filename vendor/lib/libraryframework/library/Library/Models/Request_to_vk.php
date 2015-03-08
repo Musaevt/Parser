@@ -1,5 +1,5 @@
 <?php
-
+namespace Library\Models;
 Class Request_to_vk{
     
           private $path;

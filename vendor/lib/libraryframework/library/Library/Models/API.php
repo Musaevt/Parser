@@ -1,4 +1,8 @@
 <?php
+namespace Library\Models;
+use Library\Models\VK_Community;
+use Library\Models\VK_User;
+use Library\Models\VK_Users_In_Groups;
 
 class API extends BaseClass{
     private $Method_Name;
@@ -17,8 +21,9 @@ class API extends BaseClass{
 
     public function send_request($connection,$tables){
         $Method_name= mb_strtolower($this->Method_Name);
-         return (Application_Config::check_action("API",$Method_name))?$this->$Method_name($connection,$tables)->Response:"Haven`t such API Method";
-        
+        // return (Application_Config::check_action("API",$Method_name))?$this->$Method_name($connection,$tables)->Response:"Haven`t such API Method";
+        $answer=$this->$Method_name($connection,$tables)->Response;
+        return json_encode($answer);
     }
 
     private function get_rating_groups($connection,$tables)
@@ -39,9 +44,26 @@ class API extends BaseClass{
            array_push($this->Response, $json);
         }   
         return $this;
-            
-        
-    }
+   }
+   private function get_group_by_id($connection,$tables){
+    $callvk="https://api.vk.com/method/";
+    $MethodName='groups.getById';
+    $group_Name=  $this->data['group_name'];
+    $Parametrs=array(
+        "group_id" =>  $group_Name,
+         "fields"   =>'photo_medium,city,country,place,description,wiki_page,members_count,counters,start_date,finish_date,activity,status,contacts,links,fixed_post,verified,site',
+        );
+    //запрос
+    $req=new Request_to_vk($callvk, $MethodName,$Parametrs);
+    $answer=$req->push_request()
+                ->get_answer();
+    
+    $group=new VK_Community();
+    $this->Response=$group->setData($answer->response[0])->get_JSON();
+  
+    return $this;
+
+   }
     private function transform_Data_Type($data){
         switch ($this->Response_Type){
             case "json":

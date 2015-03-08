@@ -1,4 +1,5 @@
 <?php
+namespace Library\Models;
 class BaseClass {
    public function setData($data){
      

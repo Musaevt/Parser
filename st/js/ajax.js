@@ -51,3 +51,21 @@ var data={
 						responsive: true
 					});};
  
+var getAjax=function(requestData){
+     $.ajax({ // для краткости - jQuery
+             type:'POST',
+             url: '/api',
+             data:requestData,
+             dataType: "json",
+	     success:function(data){
+                 return data;
+             },
+               
+             error:  function(xhr, str){
+                    alert('Error conecting with server');
+                },
+        
+             cache: false
+
+            });
+}

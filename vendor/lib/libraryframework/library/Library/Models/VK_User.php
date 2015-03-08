@@ -1,4 +1,5 @@
 <?php
+namespace Library\Models;
 class VK_User{
     private $uid;
     private $first_name;

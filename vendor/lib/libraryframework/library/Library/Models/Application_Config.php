@@ -1,4 +1,5 @@
 <?php
+namespace Library\Models;
 class Application_Config {
     public Static  $configs;
 public function __construct() {

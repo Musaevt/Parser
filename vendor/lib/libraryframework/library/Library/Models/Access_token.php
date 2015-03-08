@@ -1,5 +1,5 @@
 <?php
-
+namespace Library\Models;
 class Access_token{
     public static $App_Id = APP_ID;
     public static $App_pass = APP_PASS;
