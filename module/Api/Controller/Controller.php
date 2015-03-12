@@ -3,7 +3,7 @@ namespace Api\Controller;
 
 use Library\AbstractController;
 use Library\Database;
-use Library\Models\API;
+use Api\Models;
 
 class Controller extends AbstractController{
     
