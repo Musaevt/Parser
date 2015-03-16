@@ -43,17 +43,17 @@ return array(
         )
     ),
     'resource_options' => array(
-        'path' => '/application/resources/global.php'
+        'path'       => '/application/resources/global.php',
+        'application'=>array(
+          'APP_ID'      =>4780016,
+          'APP_PASS'    =>'mCmez1oBgIqItJIHlriM'
+            )
     ),
     'db_options' => require Q_PATH.'/application/config/db.config.php',
     
-    'tables'=>array(
-       "table_Users"          =>"vk_Users_2",
-       "table_Groups"         =>"vk_Groups_2",
-       "table_Users_In_Groups"=>"Users_In_Groups_2",
-    )
+   
 );
-
+//добавляеться access_token   , expires_in
 /*
 'views' => array(
     'head' => array(

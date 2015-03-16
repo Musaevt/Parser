@@ -1,41 +1,31 @@
 <?php
 namespace Library\Models;
-class VK_Community{
-private $gid;
-private $name;
-private $screen_name;
-private $is_closed;
-private $deactivated;
-private $type;
-private $photo_big;
-private $photo_medium;
-private $start_date;
-private $city;
-private $country;
-private $description;
-private $wiki_page;
-private $members_count;
-private $members=array();
-private $status;
-private $contacts;
-//private $links;
-private $verified;
-private $site;
+
+class Сommunity extends \Library\Models\Base\BaseClass{
+protected $id;
+protected $gid;
+protected $name;
+protected $screen_name;
+protected $is_closed;
+protected $deactivated;
+protected $type;
+protected $photo_big;
+protected $start_date;
+protected $city;
+protected $country;
+protected $description;
+protected $wiki_page;
+protected $members_count;
+protected $members=array();
+protected $status;
+protected $contacts;//контактная инфа(id пользоавтеля)
+protected $verified;
+protected $site;
+protected $last_update;//последнии обновление группы в БД
 
 function __construct(){
     
  }
- public function setData($data){
-     
-    foreach ($data as $key=>$argum){
-       $method='set'.ucfirst($key);
-      $this->$method($argum);
-    }
-    return $this;
-}
-public function getMembers_count(){
-    return $this->members_count;
-}
 
 public function setContacts($argument){
     $this->contacts=isset($argument[0])?$argument[0]->user_id:0;
@@ -46,25 +36,7 @@ public function setCountry($argument){
 public function setCity($argument){
       $this->city=isset($argument)?$argument->title:"";
 }
- public function __call($method_name, $argument)
-   {
-        $args = preg_split('/(?<=\w)(?=[A-Z])/', $method_name);
-        $action = array_shift($args);
-        $property_name = strtolower(implode('_', $args));
-        //имя свойства
-       
-        switch ($action)
-        {
-            case 'get':
-               return isset($this->$property_name) ? $this->$property_name : null;
-            
- 
-            case 'set':
-                property_exists ($this,$property_name)?$this->$property_name=$argument[0]:0;
-                return $this;
-        }
-    }
-    
+
     
 public function get_community_byID($connection){
     //проверка на получние из BD если нет получение из Vk Api

@@ -2,7 +2,8 @@
 
 return array(
     'actions' => array(
-        'index' => 'index'
+        'index' => 'index',
+        'search'=>'search'
     ),
     'module_includes' => array(
         'merge' => array(
@@ -19,8 +20,11 @@ return array(
             ),
             'module_views' => array(
                 'content' => array(
-                    'path' => 'index/main'
+                'path' => 'index/main'
               ),
+                'search'=>array(
+                'path'=>'index/search'
+                )
             )
         ),
         'replace' => array(

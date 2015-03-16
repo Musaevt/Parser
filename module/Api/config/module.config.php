@@ -1,6 +1,7 @@
 <?php
 return array(
     'actions' => array(
-        'index' => 'index'
+        'index' => 'index',
+        'method'=>'Method'
     ),
 );

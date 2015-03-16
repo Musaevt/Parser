@@ -17,7 +17,8 @@ class Application{
             'get' => $_GET,
             'post' => $_POST,
             'cookie' => $_COOKIE,
-            'session' => $_SESSION
+            'session' => $_SESSION,
+            'server'=>$_SERVER
         );
         return new self();
     }

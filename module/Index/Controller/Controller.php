@@ -13,11 +13,7 @@ class Controller extends AbstractController{
    $connect->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
    $connect->query("SET NAMES UTF8;");
    
-    $tables=  array(
-       "table_Users"          =>"vk_Users_2",
-       "table_Groups"         =>"vk_Groups_2",
-       "table_Users_In_Groups"=>"Users_In_Groups_2",
-   );
+   
        $view = new View('Index');
         $view->setContent('content');
         $view->generate(); 
@@ -26,5 +22,13 @@ class Controller extends AbstractController{
 //      $answ=$Request->send_request($connect, $tables);
 //        $str=json_encode($answ);
 //        echo $str;
+    }
+    public function SearchAction(){
+         $view = new View('Index');
+        $view->setContent('search');
+        $view->generate(); 
+        
+        
+        var_dump($_POST);
     }
 }

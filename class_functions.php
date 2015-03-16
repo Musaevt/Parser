@@ -152,7 +152,6 @@ public function method_Get_Groupinfo($connect,$tables){
         "group_id" =>  $group_Name,
          "fields"   =>'city,country,place,description,wiki_page,members_count,counters,start_date,finish_date,activity,status,contacts,links,fixed_post,verified,site',
         );
-    $http=$callvk.$MethodName.'?';
     //запрос
     $req=new Request_to_vk($callvk, $MethodName,$Parametrs);
     $answer=$req->push_request()

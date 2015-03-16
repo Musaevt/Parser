@@ -1,30 +1,24 @@
 <?php
 namespace Library\Models;
-class VK_User{
-    private $uid;
-    private $first_name;
-    private $last_name;
-    private $deactivated;
-    private $hidden;
-    private $photo_id;
-    private $verified;
-    private $blacklisted;
-    private $sex;
-    private $bdate;
-    private $city ;
-    private $country;
-    private $home_town;
-    private $photo_max_orig;
-    private $online;
-    private $lists;
-    private $domain;
-    private $groups_count;
-    private $has_mobile; 
-    private $contacts;
-    private $site;
-    private $education;
-    private $is_parsed;
-    private $gid_by_added_group;
+class User extends \Library\Models\Base\BaseClass{
+    protected $id;
+    protected $uid;
+    protected $first_name;
+    protected $last_name;
+    protected $deactivated;
+    protected $hidden;
+    protected $photo_max_orig;
+    protected $verified;
+    protected $sex;
+    protected $bdate;
+    protected $city ;
+    protected $country;
+    protected $home_town;
+    protected $domain;
+    protected $has_mobile; 
+    protected $mobile_phone;
+    protected $site;
+  
     /*
      * university — идентификатор университета; 
         положительное число
@@ -86,11 +80,11 @@ class VK_User{
         положительное число
         type_str — название типа. 
      */
-    private $status;
-    private $last_seen;
-    private $followers_count;
-    private $friends_count;
-    private $occupation;
+    protected $status;
+    protected $followers_count;
+    protected $groups_count;
+    protected $friends_count;
+    protected $occupation;
     /*
      * type — может принимать значения work, school, university; 
     строка
@@ -99,34 +93,23 @@ class VK_User{
     name — название школы, вуза или места работы; 
     строка
      */
-   private $nickname;
-   private $relation;
-   private  $activities;
-   private  $interests;
-   private  $music;
-   private  $about;
-   function __construct(){
+   protected  $nickname;
+   protected  $relation;
+   protected  $activities;
+   protected  $interests;
+   protected  $music;
+   protected  $about;
+   protected  $date_update;
+           function __construct(){
     
  }
-public function setData($data){
- //    $this->setId($data["id"]);
-  foreach ($data as $key=>$argum){
-       $method='set'.ucfirst($key);
-      $this->$method($argum);
-    }
-    return $this;
-}
-public function setLast_seen($argument){
-    $this->last_seen=0;
-}
+
+
 public function setOccupation($argument){
-    $this->occupation=0;
-}
-public function setContacts($argument){
-    $this->contacts=0;
+    $this->occupation=isset($argument)?$argument->id:0;
 }
 public function setCountry($argument){
-    $this->country=0;
+    $this->country=isset($argument)?$argument->id:0;
 }
 public function setCounters($argument){
     $this->friends_count=$argument->friends;
@@ -135,28 +118,9 @@ public function setCounters($argument){
 }
 
 public function setCity($argument){
-    $this->city=0;
+    $this->city=isset($argument)?$argument->id:0;;
 }
- public function __call($method_name, $argument)
-   {
-        $args = preg_split('/(?<=\w)(?=[A-Z])/', $method_name);
-        $action = array_shift($args);
-        $property_name = strtolower(implode('_', $args));
-        //имя свойства
-       
-        switch ($action)
-        {
-            case 'get':
-                return isset($this->$property_name) ? $this->$property_name : null;
- 
-            case 'set':{
-              property_exists ($this,$property_name)?$this->$property_name=$argument[0]:0;
-                 return $this;
-              }
-               
-        }
-    }
-    
+     
 public function save($connection,$table_name,$parametrs=NULL){
     $query='INSERT INTO '.$table_name.' (';
     $questions=' VALUES (';
@@ -327,5 +291,49 @@ public function get_count_pages_VK()
                    ->get_answer()->response;
     
     return (!!$answer->groups->count)?$answer->groups->count:0;
+}
+ public function get_JSON($param=array()){
+   $answer=array();
+   $arr=array(
+      'id'                   =>(isset($this->id))?$this->id:"",                                 
+      'uid'                  =>(isset($this->uid))?$this->uid:"",                               
+      'first_name'           =>(isset($this->first_name))?$this->first_name:"",                       
+      'last_name'            =>(isset($this->last_name))?$this->last_name:"",                 
+      'deactivated'          =>(isset($this->deactivated))?$this->deactivated:"",            
+      'hidden'               =>(isset($this->hidden))?$this->hidden:"",                        
+      'photo_max_orig'       =>(isset($this->photo_max_orig))?$this->photo_max_orig:"",      
+      'verified'             =>(isset($this->verified))?$this->verified:"",                    
+      'sex'                  =>(isset($this->sex))?$this->sex:"",                                  
+      'bdate'                =>(isset($this->bdate))?$this->bdate:"",                             
+      'city'                 =>(isset($this->city))?$this->city:"",                                
+      'country'              =>(isset($this->country))?$this->country:"",                           
+      'home_town'            =>(isset($this->home_town))?$this->home_town:"",                 
+      'domain'               =>(isset($this->domain))?$this->domain:"",                           
+      'has_mobile'           =>(isset($this->has_mobile))?$this->has_mobile:"",            
+      'mobile_phone'         =>(isset($this->mobile_phone))?$this->mobile_phone:"",           
+      'site'                 =>(isset($this->site))?$this->site:"",                            
+      'status'               =>(isset($this->status))?$this->status:"",                    
+      'followers_count'      =>(isset($this->followers_count))?$this->followers_count:"",     
+      'groups_count'         =>(isset($this->groups_count))?$this->groups_count:"",         
+      'friends_count'        =>(isset($this->friends_count))?$this->friends_count:"",      
+      'occupation'           =>(isset($this->occupation))?$this->occupation:"",            
+      'nickname'             =>(isset($this->nickname))?$this->nickname:"",                 
+      'relation'             =>(isset($this->relation))?$this->relation:"",                 
+      'activities'           =>(isset($this->activities))?$this->activities:"",              
+      'interests'            =>(isset($this->interests))?$this->interests:"",               
+      'music'                =>(isset($this->music))?$this->music:"",                       
+      'about'                =>(isset($this->about))?$this->about:"",                       
+      'date_update'          =>(isset($this->date_update))?$this->date_update:"",          
+       );
+       
+       foreach ($param as $value)
+       {
+           if(array_key_exists($value, $arr))
+              $arr[$value]=$arr[$value];
+       }
+        if(count($param)==0)
+            $answer=$arr;
+      
+      return $answer;
 }
 }

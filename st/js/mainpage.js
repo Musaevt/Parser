@@ -1,15 +1,16 @@
+var placeholder;
 
 $(document).ready(function(){
     var i = 0; //это будет наш счетчик, заодно используем его для формирования класса file-0x
-    
+    placeholder=  $('img.element_form')[0].src;
     
     var groups=$('.groups');
     
-     addChange(groups.children());
+    // addChange(groups.children());
     
     
     
-    $('#add_group').click(function(e){
+ $('#add_group').click(function(e){
     i++; //крутим счетчик на 1
     $("<input type='text' class='vk_groups'>").appendTo('.groups');
     //добавляем в див files еще одно поле для загрузки
@@ -21,24 +22,7 @@ $(document).ready(function(){
 
   
 });
-var addChange=function(group){
-  var i=0;  
-    console.log(group.last().children('.vk_group'));
- var data={
-       request_name:"get_group_by_id",
-       group_name:group.last().children('.vk_group')[0].value
-   }
- 
-    group.change(function(e){
-       var newgroup=addGroup();
-       addChange(newgroup);
-       getAjax(data,i);
-       i++;
-   
-   
-        
-    })
-}
+
 var addGroup=function(){
     return $(" <div class='group'><input type='text' class='vk_group'><img src='/st/img/placeholder.jpg' class='vk_group_logo'></div>").appendTo('.groups'); 
 }
@@ -47,19 +31,26 @@ var addGroup=function(){
 
 
 
-var getAjax=function(requestData,id){
+var getAjax=function(requestData){
      $.ajax({ // для краткости - jQuery
              type:'POST',
-             url: '/api',
+             url: '/api/method',
              data:requestData,
              dataType: "json",
 	     success:function(data){
-                 $('.vk_group_logo')[id].src=data.photo_medium;
+                 $('img.element_form')[0].src=data.photo_medium;
                  return data;
              },
                
              error:  function(xhr, str){
-                    alert('Error conecting with server');
+                 if(xhr.status&&xhr.status==200){
+                 $('input.element_form')[0].value="";
+                    $('img.element_form')[0].src=placeholder;
+                    alert('VK haven`t group with name: '+requestData.group_name);
+                }
+               else{
+                   alert('Error:Please try later');
+                  }
                 },
         
              cache: false
@@ -67,9 +58,6 @@ var getAjax=function(requestData,id){
             });
 }
 
-var data={
-    request_name:"get_group_by_id",
-    group_name:"vkwhy"
-}
-
-getAjax(data,0);
+$('input.element_form').change(function(e){
+    getAjax({method_name:"get_community_by_id_vk",data:{group_name:e.target.value}});
+  });

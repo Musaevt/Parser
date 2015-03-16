@@ -1,11 +1,12 @@
 <?php
-namespace Library\Models;
+namespace Library\Models\Base;
 class BaseClass {
+    
    public function setData($data){
-     
+      
     foreach ($data as $key=>$argum){
        $method='set'.ucfirst($key);
-      $this->$method($argum);
+       $this->$method($argum);
     }
     return $this;
 }
