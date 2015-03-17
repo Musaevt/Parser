@@ -38,7 +38,8 @@ var getAjax=function(requestData){
              data:requestData,
              dataType: "json",
 	     success:function(data){
-                 $('img.element_form')[0].src=data.photo_medium;
+                 $('img.element_form')[0].src=data.photo_big;
+                 console.log(data);
                  return data;
              },
                

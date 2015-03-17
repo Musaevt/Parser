@@ -4,7 +4,7 @@ namespace Api\Models;
 use Library\Application;
 use Api\Models\Request_to_vk;
 use Library\Models\Base\BaseClass;
-use Library\Models\Сommunity;
+use Library\Models\Community;
 use Library\Models\User;
 use Library\Models\Users_In_Сommunity;
 
@@ -27,6 +27,7 @@ class API extends BaseClass{
         $Method_name= mb_strtolower($this->Method_Name);
         $answer=method_exists($this,$Method_name)?$this->$Method_name()->Response:self::$ERROR;
         if(isset($this->Response_Type)&&$this->Response_Type=="json")$answer=json_encode($answer);
+        
         return $answer;
     }
 
@@ -63,10 +64,13 @@ class API extends BaseClass{
     $req=new Request_to_vk($callvk, $MethodName,$Parametrs);
     $answer=$req->push_request()
                 ->get_answer();
-    $us=new \Library\Models\Users_In_Community();
-    $group=new Сommunity();
-    $this->Response=$group->setData($answer->response[0]);
-  
+    $answer=  json_decode($answer);
+    if(isset($answer->error)){
+     $this->Response=array('error_code'=>$answer->error->error_code,'error_msg'=>$answer->error->error_msg);
+    }else{
+    $group=new Community();
+    $this->Response=$group->setData($answer->response[0])->get_JSON();
+    }
     return $this;
    }
    

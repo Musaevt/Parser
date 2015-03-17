@@ -30,6 +30,7 @@ class Autoload {
         $vendor_options = $this->configuration['vendor_options'];
         $core_path = $vendor_options['vendor_path'].$vendor_options['projects']['lib']['library_path'].$class_path;
         if (file_exists(Q_PATH.$core_path.'.php')) {
+           
             require_once Q_PATH.$core_path.'.php';
         }
     }

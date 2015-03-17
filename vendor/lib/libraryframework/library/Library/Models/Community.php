@@ -1,7 +1,7 @@
 <?php
 namespace Library\Models;
 
-class Сommunity extends \Library\Models\Base\BaseClass{
+class Community extends \Library\Models\Base\BaseClass{
 protected $id;
 protected $gid;
 protected $name;

@@ -18,7 +18,7 @@ class Controller extends AbstractController{
    
    
    $api=new API($_,array('uid'=>'108397577'));
-   var_dump($api->send_request());
+   echo $api->send_request();
 
  
    
