@@ -5,7 +5,7 @@ return array(
         'script' => array(
             'jquery' => array(
                 'version' => '1',
-                'file' => '//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'
+                'file' => '/st/js/jquery.js'
             ),
              'chart' => array(
                 'version' => '1',

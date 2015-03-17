@@ -1,6 +1,7 @@
 <?php
 namespace Library\Models;
-class User extends \Library\Models\Base\BaseClass{
+use Library\Database;
+class User extends \Library\Models\Base\BaseClassModel{
     protected $id;
     protected $uid;
     protected $first_name;
@@ -105,51 +106,24 @@ class User extends \Library\Models\Base\BaseClass{
  }
 
 
+
 public function setOccupation($argument){
-    $this->occupation=isset($argument)?$argument->id:0;
+    $this->occupation=isset($argument['id'])?$argument['id']:$argument;
 }
 public function setCountry($argument){
-    $this->country=isset($argument)?$argument->id:0;
+    $this->country=isset($argument['id'])?$argument['id']:$argument;
 }
 public function setCounters($argument){
-    $this->friends_count=$argument->friends;
-    $this->groups_count=($argument->groups)?$argument->groups:$this->get_count_pages_VK();
-    $this->followers_count=$argument->followers;
+    $this->friends_count=$argument['friends'];
+    $this->groups_count=($argument['groups'])?$argument['groups']:$this->get_count_pages_VK();
+    $this->followers_count=$argument['followers'];
 }
 
 public function setCity($argument){
-    $this->city=isset($argument)?$argument->id:0;;
+    $this->city=isset($argument['id'])?$argument['id']:$argument;;
 }
      
-public function save($connection,$table_name,$parametrs=NULL){
-    $query='INSERT INTO '.$table_name.' (';
-    $questions=' VALUES (';
-        foreach($this as $key=>$value){
-            $query.=$key.',';
-            $questions.=':'.$key.',';
-        }
-    $query=substr($query,0,-1).')';
-    $questions=substr($questions,0,-1).');';
-    $query.=$questions;
-     //var_dump($this);
-     $execute= $connection->prepare($query);
-     if($parametrs==NULL){  
-        foreach($this as $key=>$value){
-            $execute->bindValue(':'.$key, $value==null?"":$value);
-        }
-     }else{
-          foreach ($parametrs as $parametr)
-            {
-                if(property_exists($this,$parametr))
-                $execute->bindValue(':'.$parametr, $this->$parametr);
-            }
-            
-            
-        }
-     $execute->execute();
- 
-     return 1;       
-}
+
 public function update($connection,$table_name){
     $query='UPTATE '.$table_name.' SET ';
        foreach($this as $key=>$value){

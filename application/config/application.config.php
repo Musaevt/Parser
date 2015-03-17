@@ -3,7 +3,8 @@
 return array(
     'modules' => array(
         'index'=>'Index',
-        'api'=>'Api'
+        'api'=>'Api',
+        'search'=>'Search'
       
     ),
     'module_options' => array(

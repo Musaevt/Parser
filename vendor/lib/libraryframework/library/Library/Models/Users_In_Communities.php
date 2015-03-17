@@ -1,10 +1,11 @@
 <?php
 namespace Library\Models;
-use  \Library\Models\Base\BaseClass;
-class Users_In_Community extends BaseClass{
+use  \Library\Models\Base\BaseClassModel;
+use Library\Database;
+class Users_In_Communities extends BaseClassModel{
    protected $id;
-   protected $id_community;
-   protected $id_user;
+   protected $gid_community;
+   protected $uid_user;
    protected $date;
 
 
@@ -27,6 +28,7 @@ class Users_In_Community extends BaseClass{
          return $execute[0]['Count(*)'];
         
     }
+   
     
     
 }

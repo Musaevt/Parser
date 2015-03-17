@@ -1,7 +1,7 @@
 <?php
 namespace Library\Models;
 
-class Community extends \Library\Models\Base\BaseClass{
+class Community extends \Library\Models\Base\BaseClassModel{
 protected $id;
 protected $gid;
 protected $name;
@@ -28,22 +28,21 @@ function __construct(){
  }
 
 public function setContacts($argument){
-    $this->contacts=isset($argument[0])?$argument[0]->user_id:0;
+     $this->contacts=isset($argument[0])?$argument[0]->user_id:0;
 }
 public function setCountry($argument){
-    $this->country=isset($argument)?$argument->title:"";
+     $this->country=isset($argument->id)?$argument->id:$argument;
 }
 public function setCity($argument){
-      $this->city=isset($argument)?$argument->title:"";
+     $this->city=isset($argument->id)?$argument->id:$argument;
+}
+public function setPhoto_200($argument){
+    $this->photo_big=$argument;
 }
 
-    
 public function get_community_byID($connection){
     //проверка на получние из BD если нет получение из Vk Api
-
-        
-        
-        $callvk="https://api.vk.com/method/";
+       $callvk="https://api.vk.com/method/";
         $MethodName='groups.getById';
         $group_Name= isset($this->gid)?$this->gid:$this->screen_name;
 
@@ -67,30 +66,7 @@ public function get_community_byID($connection){
         return $this;
         
     }
-public function save($connection,$table_name){
-    $query='INSERT INTO '.$table_name.' (';
-    $questions=' VALUES (';
-        foreach($this as $key=>$value){
-            $query.=$key.',';
-            $questions.=':'.$key.',';
-        }
-    $query=substr($query,0,-1).')';
-    $questions=substr($questions,0,-1).');';
-    $query.=$questions;
-    $execute= $connection->prepare($query);
-        foreach($this as $key=>$value){
-          $execute->bindValue(':'.$key, $value);
-        }
 
-        $success=$execute->execute();
-        if(!$success)
-        { $fail=$execute->errorInfo();
-            echo $fail[2]."</br>";
-        }
-         return $this;
-   
-          
-}
 public function get_all_Members($connection,$table){
     $query="SELECT Users.* "
    . "FROM ".$table['table_Users']." as Users LEFT OUTER JOIN ".$table['table_Users_In_Groups']." as Jointable "

@@ -1,9 +1,10 @@
 <?php
 namespace Library\Models\Base;
+use Library\Database;
 class BaseClass {
     
    public function setData($data){
-    foreach ($data as $key=>$argum){
+     foreach ($data as $key=>$argum){
        $method='set'.ucfirst($key);
        $this->$method($argum);
     }
@@ -28,6 +29,6 @@ public function __call($method_name, $argument)
                 return $this;
         }
     }
-    
+  
     
 }

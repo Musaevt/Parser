@@ -38,9 +38,16 @@ var getAjax=function(requestData){
              data:requestData,
              dataType: "json",
 	     success:function(data){
+               
+                 if(data.error_code){
+                  $('img.element_form').last().hide();
+                  console.log($('div.error'));
+                     if($('div.error_api').length==0)
+                     $('<div class="error_api">').text(data.error_msg).appendTo('div.group');
+                 }else{
                  $('img.element_form')[0].src=data.photo_big;
-                 console.log(data);
-                 return data;
+                   }
+                  return data;
              },
                
              error:  function(xhr, str){
@@ -60,5 +67,8 @@ var getAjax=function(requestData){
 }
 
 $('input.element_form').change(function(e){
-    getAjax({method_name:"get_community_by_id_vk",data:{group_name:e.target.value}});
+     var img =$(e.target).next();
+     (!img.is(":visible"))?img.show():0;
+      getAjax({method_name:"get_community_by_id_vk",data:{group_name:e.target.value}});
+     
   });

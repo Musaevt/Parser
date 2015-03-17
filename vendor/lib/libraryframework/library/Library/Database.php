@@ -4,6 +4,7 @@ namespace Library;
 use Library\Application;
 
 class Database {
+    static public $connect;
     static public $options;
     static public $dsn ;
     static public $user ;
@@ -14,10 +15,16 @@ class Database {
         self::$dsn='mysql:dbname='.self::$options['database'].';host='.self::$options['host'];
         self::$user=self::$options['user'];
         self::$password=self::$options['password'];
+        Database::get_ready_connetction();
         return new self();
     }
-    public function __construct() {}
-     public  function getConnection()  {
+    private function get_ready_connetction(){
+        $connection= Database::getConnection();
+        $connection->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+        $connection->query("SET NAMES UTF8;");
+        self::$connect=$connection;
+    }
+    private function getConnection()  {
        
         try {
             $newconnect = new \PDO(self::$dsn, self::$user, self::$password);
@@ -26,4 +33,7 @@ class Database {
         }
         return $newconnect;
     }
+   
+    public function __construct() {}
+   
 }

@@ -3,10 +3,10 @@ return array(
     'host'     => 'localhost',
     'user'     => 'root',
     'password' => '',
-    'database' => 'vkparser',
+    'database' => 'Analyzer',
     'tables'    =>array(
-           "table_Users"          =>"Users",
-           "table_Groups"         =>"Community",
-           "table_Users_In_Groups"=>"Users_In_Groups_2",
+           "User"          =>  "User",
+           "Community"         =>"Community",
+           "Users_In_Communities"=>"Users_In_Communities",
             ),
 );

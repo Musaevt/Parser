@@ -2,6 +2,7 @@
 namespace Library;
 
 use Library\Route;
+use Library\Database;
 
 class Application{
     public static $config = array();
@@ -20,6 +21,7 @@ class Application{
             'session' => $_SESSION,
             'server'=>$_SERVER
         );
+        Database::init();
         return new self();
     }
 
