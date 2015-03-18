@@ -26,7 +26,7 @@ class Api extends BaseClass{
     public function send_request(){
         $Method_name= mb_strtolower($this->method_name);
         $this->response=method_exists($this,$Method_name)?$this->$Method_name()->response:self::$ERROR;
-        if(isset($this->response_type)&&$this->response_type=="json")$answer=json_encode($answer);
+        if($this->response_type=="json")$this->response=json_encode($this->response);
          return $this;
     }
 
@@ -48,33 +48,7 @@ class Api extends BaseClass{
         return $this;
    }
    
-    private function get_community_by_id_vk(){
-    $callvk="https://api.vk.com/method/";
-    $MethodName='groups.getById';
-    $group_Name=  $this->data['group_name'];
-    if(!$group_Name){
-        return 0;
-    }
-    $Parametrs=array(
-        "group_id" =>  $group_Name,
-         "fields"   =>'photo_medium,city,country,place,description,wiki_page,members_count,counters,start_date,finish_date,activity,status,contacts,links,fixed_post,verified,site',
-     //    "v"=>5.29,
-        );
-    //запрос
-    $req=new Request_to_vk($callvk, $MethodName,$Parametrs);
-    $answer=$req->push_request()
-                ->get_answer();
-    $answer=  json_decode($answer);
-    if(isset($answer->error)){
-     $this->response=array('error_code'=>$answer->error->error_code,'error_msg'=>$answer->error->error_msg);
-    }else{
-    $group=new Community();
-    $this->response=$group->setData($answer->response[0])->get_JSON();
-    }
-    return $this;
-   }
-   
-    private function get_community_members_vk(){
+    private function get_community_members(){
         /*param to data
         * group_id
         */
@@ -93,21 +67,31 @@ class Api extends BaseClass{
        
              
    }
-    private function get_users_community(){
+    private function get_user_community(){
        /*   param to data
         *   uid(user id)
         */
         $this->groups_get_vk();
-        $response=json_decode($this->response);
-        $groups= $response->response->items;
-       while($response->response->count>$this->data['offset']+1000){
+        $response=json_decode($this->response,true);
+        //пережелать изменения id на gid
+        
+       for ($i=0;$i<count($response['response']['items']);$i++){
+        $response['response']['items'][$i]['gid']=$response['response']['items'][$i]['id'];// version 5.29
+        }
+        
+      $groups= $response['response']['items'];
+       while($response['response']['count']>$this->data['offset']+1000){
          $this->data['offset']+=1000;
          $this->groups_get_vk();
-         $response=json_decode($this->response);
-         $groups= array_merge($groups, $response->response->items);
+         $response=json_decode($this->response,true);
+         
+       for ($i=0;$i<count($response['response']['items']);$i++){
+        $response['response']['items'][$i]['gid']=$response['response']['items'][$i]['id'];// version 5.29
+        }
+        
+         $groups= array_merge($groups, $response['response']['items']);
        }
        $this->response=  $groups;
-      
        return $this;
        
    }
@@ -155,6 +139,32 @@ class Api extends BaseClass{
         return $this;  
    }
 
+    private function get_community_by_id_vk(){
+        $callvk="https://api.vk.com/method/";
+        $MethodName='groups.getById';
+        $group_Name=  $this->data['group_name'];
+        if(!$group_Name){
+            return 0;
+        }
+        $Parametrs=array(
+            "group_id" =>  $group_Name,
+             "fields"   =>'photo_medium,city,country,place,description,wiki_page,members_count,counters,start_date,finish_date,activity,status,contacts,links,fixed_post,verified,site',
+         //    "v"=>5.29,
+            );
+        //запрос
+        $req=new Request_to_vk($callvk, $MethodName,$Parametrs);
+        $answer=$req->push_request()
+                    ->get_answer();
+        $answer=  json_decode($answer);
+        if(isset($answer->error)){
+         $this->response=array('error_code'=>$answer->error->error_code,'error_msg'=>$answer->error->error_msg);
+        }else{
+        $group=new Community();
+        $this->response=$group->setData($answer->response[0])->get_JSON();
+        }
+    return $this;
+   }
+   
   
    
  
