@@ -4,7 +4,7 @@ use Library\Database;
 class BaseClassModel extends BaseClass{
     
    
-  public function save($connection="",$table_names="",$parametrs=NULL){
+  public function save($parametrs=NULL){
     $connection=Database::$connect;
     $table_names=Database::$options['tables'];
     $class_name= explode("\\", get_class($this));
@@ -12,21 +12,29 @@ class BaseClassModel extends BaseClass{
   
     $query='INSERT INTO '.$table_names[$class_name].' (';
     $questions=' VALUES (';
-        foreach($this as $key=>$value){
-            $query.=$key.',';
-            $questions.=':'.$key.',';
-        }
-    $query=substr($query,0,-1).')';
-    $questions=substr($questions,0,-1).');';
-    $query.=$questions;
-    $execute= $connection->prepare($query);
+       
      if($parametrs==NULL){  
-        foreach($this as $key=>$value){
-            $execute->bindValue(':'.$key, $value);
-        }
+            foreach($this as $key=>$value){
+                   $query.=$key.',';
+                   $questions.=':'.$key.',';
+               }
+           $query=substr($query,0,-1).')';
+           $questions=substr($questions,0,-1).');';
+           $query.=$questions;
+           $execute= $connection->prepare($query);
+               foreach($this as $key=>$value){
+                   $execute->bindValue(':'.$key, $value);
+               }
      }else{
-          foreach ($parametrs as $parametr)
-            {
+          foreach($parametrs as $parametr){
+            $query.=$parametr.',';
+            $questions.=':'.$parametr.',';
+           }
+            $query=substr($query,0,-1).')';
+            $questions=substr($questions,0,-1).');';
+            $query.=$questions;
+            $execute= $connection->prepare($query);
+          foreach ($parametrs as $parametr){
                 if(property_exists($this,$parametr))
                 $execute->bindValue(':'.$parametr, $this->$parametr);
             }
@@ -35,7 +43,31 @@ class BaseClassModel extends BaseClass{
         }
         $execute->execute();
       
+       
      return $this;       
 }
+  public function update(){
+        $connection=Database::$connect;
+        $table_names=Database::$options['tables'];
+       
+        $class_name= explode("\\", get_class($this));
+      $class_name=$class_name[count($class_name)-1];
+  
+    $query='UPDATE '.$table_names[$class_name].' SET ';
+    
+    foreach($this as $key=>$value){
+                   $query.=$key.'=:'.$key.',';
+                }
+           $query=substr($query,0,-1);
+           $query.=' WHERE `id`='.$this->id;
+           $execute= $connection->prepare($query);
+          
+           foreach($this as $key=>$value){
+                   $execute->bindValue(':'.$key, $value);
+               }
+        $execute->execute();
+        $answer= $execute->fetchAll();
+        return $this;
+    }
     
 }

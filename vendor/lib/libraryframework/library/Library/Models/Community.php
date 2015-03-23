@@ -1,7 +1,12 @@
 <?php
 namespace Library\Models;
 
-class Community extends \Library\Models\Base\BaseClassModel{
+use Library\Models\Base\BaseClassModel;
+
+//sresial array for save in v >5.19
+//array("gid","name","screen_name","is_closed","deactivated","type","photo_big","start_date","city","country","description","wiki_page","members_count","status","contacts","verified","site","date_update");
+
+class Community extends BaseClassModel{
 protected $id;
 protected $gid;
 protected $name;
@@ -16,56 +21,33 @@ protected $country;
 protected $description;
 protected $wiki_page;
 protected $members_count;
-protected $members=array();
 protected $status;
 protected $contacts;//контактная инфа(id пользоавтеля)
 protected $verified;
 protected $site;
-protected $last_update;//последнии обновление группы в БД
+protected $date_update;//последнии обновление группы в БД
 
 function __construct(){
     
  }
 
 public function setContacts($argument){
-     $this->contacts=isset($argument[0])?$argument[0]->user_id:0;
+     $this->contacts=isset($argument[0])?(($argument[0]['user_id'])?$argument[0]['user_id']:0):0;
 }
 public function setCountry($argument){
-     $this->country=isset($argument->id)?$argument->id:$argument;
+     $this->country=is_array($argument)?($argument['id'])?$argument['id']:NULL:$argument;
+       
 }
 public function setCity($argument){
-     $this->city=isset($argument->id)?$argument->id:$argument;
+    $this->city=  is_array($argument)?($argument['id'])?$argument['id']:NULL:$argument;
 }
 public function setPhoto_200($argument){
     $this->photo_big=$argument;
 }
+public function setWiki_page($argument){
+    $this->wiki_page=$argument;
+ }
 
-public function get_community_byID($connection){
-    //проверка на получние из BD если нет получение из Vk Api
-       $callvk="https://api.vk.com/method/";
-        $MethodName='groups.getById';
-        $group_Name= isset($this->gid)?$this->gid:$this->screen_name;
-
-        $Parametrs=array(
-            "group_id" =>  $group_Name,
-             "fields"   =>'city,country,place,description,wiki_page,members_count,counters,start_date,finish_date,activity,status,contacts,links,fixed_post,verified,site',
-            );
-        $http=$callvk.$MethodName.'?';
-        //запрос
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $http);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_POST, 1);
-
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $Parametrs);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0); // On dev server only!
-        $result = curl_exec($ch);
-        $answer=  json_decode($result);    
-        $this->setData($answer->response[0]);
-        return $this;
-        
-    }
 
 public function get_all_Members($connection,$table){
     $query="SELECT Users.* "

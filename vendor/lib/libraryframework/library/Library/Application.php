@@ -12,6 +12,7 @@ class Application{
     public static $router;
 
     public static function init($configuration = array()) {
+        session_start();
         self::$config = $configuration;
         self::$request_variables = array(
             'request' => $_REQUEST,
@@ -28,7 +29,7 @@ class Application{
     function __construct() {}
 
     public function run() {
-        session_start();
+       
         $route = new Route();
         self::$router = $route;
        

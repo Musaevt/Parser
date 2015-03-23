@@ -69,17 +69,18 @@ class Api extends BaseClass{
    }
     private function get_user_community(){
        /*   param to data
-        *   uid(user id)
+        *   uid(user id),  max_count(count max community,not neccessary)
         */
         $this->groups_get_vk();
         $response=json_decode($this->response,true);
-        //пережелать изменения id на gid
+        //переделать изменения id на gid
         
        for ($i=0;$i<count($response['response']['items']);$i++){
         $response['response']['items'][$i]['gid']=$response['response']['items'][$i]['id'];// version 5.29
         }
         
       $groups= $response['response']['items'];
+      if(!isset($this->data['max_count'])||($response['response']['count']<=$this->data['max_count'])){
        while($response['response']['count']>$this->data['offset']+1000){
          $this->data['offset']+=1000;
          $this->groups_get_vk();
@@ -92,13 +93,17 @@ class Api extends BaseClass{
          $groups= array_merge($groups, $response['response']['items']);
        }
        $this->response=  $groups;
+      }
+      else{
+          $this->response=NULL;
+      }
        return $this;
        
    }
 
 
    private function  groups_getMembers_Vk(){
-        $this->check_access_token();   
+      
         (isset($this->data['offset']))?$this->data['offset']:$this->data['offset']=0;
         $callvk="https://api.vk.com/method/";
         $MethodName='groups.getMembers';
@@ -119,8 +124,7 @@ class Api extends BaseClass{
    
    private function  groups_get_vk(){
        Access_token::check_access_token();
-     
-        (isset($this->data['offset']))?$this->data['offset']:$this->data['offset']=0;
+       (isset($this->data['offset']))?$this->data['offset']:$this->data['offset']=0;
         $callvk="https://api.vk.com/method/";
         $MethodName='groups.get';
         $Parametrs=array(
@@ -155,12 +159,11 @@ class Api extends BaseClass{
         $req=new Request_to_vk($callvk, $MethodName,$Parametrs);
         $answer=$req->push_request()
                     ->get_answer();
-        $answer=  json_decode($answer);
-        if(isset($answer->error)){
-         $this->response=array('error_code'=>$answer->error->error_code,'error_msg'=>$answer->error->error_msg);
+        $answer=  json_decode($answer,true);
+        if(isset($answer['error'])){
+         $this->response=array('error_code'=>$answer['error']['error_code'],'error_msg'=>$answer['error']['error_msg']);
         }else{
-        $group=new Community();
-        $this->response=$group->setData($answer->response[0])->get_JSON();
+         $this->response=$answer['response'][0];
         }
     return $this;
    }

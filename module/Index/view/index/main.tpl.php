@@ -2,18 +2,18 @@
     
     
     
-    <form id="param_search" method="POST" action="/index/search">
+    <form id="param_search" method="GET" action="/search"  >
        
        
              <div class="group">
-             <input  type="text" required class="element_form" name="group_name">
+             <input  type="text" required class="element_form" name="community_id">
              <img src="/st/img/placeholder.jpg" class="element_form" name="group_img">
              </div>
       
-            <input type="submit" value="Поиск" class="vk_groups_submit">
+        <input type="submit" value="Поиск" class="vk_groups_submit">
          
-       <!--  <p><a href="#" id="add_group">Добавить группу</a></p>-->
-
+       
         </form>
         
 </div>
+<!--action="/index/search"-->

@@ -19,8 +19,9 @@ class Search extends BaseClass {
      }
      $community_info= new Api('get_community_by_id_vk',array('group_name'=>$this->param['community_id']));
      $community_info=$community_info->send_request()->getResponse();
+  
      $community=new Community();
-     $this->answer=$community->setData($community_info);
+     $this->answer=$community->setData($community_info)->save();
      return $this;
     }
     /*
@@ -28,6 +29,10 @@ class Search extends BaseClass {
      */
     public function get_members_of_community()
     {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        ini_set('memory_limit', '-1');
+       
         if(!isset($this->param['community_id'])){
             throw new \Exception("Community id isn`t set");
         }
@@ -57,14 +62,18 @@ class Search extends BaseClass {
                 
        }
        $this->answer=$user_uids;
+   
        return $this;
     }
     /*
      * must have array of users uid`s in param attribut
      */
     public function get_users_communities(){
-        
-         if(!isset($this->answer['uids']))
+        set_time_limit(0);
+        ignore_user_abort(true);
+        ini_set('memory_limit', '-1');
+       
+        if(!isset($this->answer['uids']))
              throw new \Exception ('Haven`t users to parse');
          
          $community=new Community();
@@ -72,14 +81,14 @@ class Search extends BaseClass {
          $gids['gids']=array();
          
          foreach($this->answer['uids'] as $uid){
-                $data=array('uid'=>$uid);
+                $data=array('uid'=>$uid,'max_count'=>700);
                 $communities_info= new Api('get_user_community',$data,"json");
                 $communities_info->send_request();
                 $response=json_decode($communities_info->getResponse(),TRUE);
                 if(is_array($response)){
                     foreach ($response as $group){
-                       $community->setData($group)->save();
-                       $relations->setData(array('gid_community'=>$community->getGid(),'uid_user'=>$uid));
+                       $community->setData($group)->save(array("gid","name","screen_name","is_closed","deactivated","type","photo_big","start_date","city","country","description","wiki_page","members_count","status","contacts","verified","site","date_update"));
+                       $relations->setData(array('gid_community'=>$community->getGid(),'uid_user'=>$uid))->save();
                        array_push($gids['gids'], $community->getGid());
                               
                     }
@@ -89,6 +98,7 @@ class Search extends BaseClass {
          }
        
          $this->answer=$gids;
+    
          return $this;
        
     }

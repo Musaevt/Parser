@@ -115,14 +115,24 @@ public function setCountry($argument){
 }
 public function setCounters($argument){
     $this->friends_count=$argument['friends'];
-    $this->groups_count=($argument['groups'])?$argument['groups']:$this->get_count_pages_VK();
+    $this->groups_count=$argument['groups'];
     $this->followers_count=$argument['followers'];
 }
 
 public function setCity($argument){
     $this->city=isset($argument['id'])?$argument['id']:$argument;;
 }
-     
+public function setBdate($argument){
+        $string= explode(".", $argument);
+        $birhdate=new \DateTime();
+        switch (count($string)){
+        case 2: checkdate($string[1], $string[0], 1)?$birhdate->setDate(1, $string[1], $string[0]):0;break;
+        case 3: checkdate($string[1], $string[0], $string[2])?$birhdate->setDate( $string[2], $string[1], $string[0]):0;break;
+        default :$birhdate=null;break;
+    }
+   $this->bdate=($birhdate)?$birhdate->format('Y:m:d'):"";
+}
+
 
 public function update($connection,$table_name){
     $query='UPTATE '.$table_name.' SET ';
@@ -141,61 +151,6 @@ public function update($connection,$table_name){
      return 1;       
            
 }
-public function save_Group($connection,$table_name,$group_id){
-     $query='INSERT INTO '.$table_name.' (gid,uid) VALUES (:gid,:uid)';
-     $execute= $connection->prepare($query);
-      $execute->bindValue(':gid',$group_id,PDO::PARAM_INT);
-       $execute->bindValue(':uid',$this->uid,PDO::PARAM_INT);
-       $execute->execute();
-        //var_dump($execute->errorInfo());
-   
-       return 1;
- }
- public function get_all_User_group($connect,$table_Name_g,$table_Name_u_i_g,$parametrs,$groups=array()){
-/*
- * $table_Name_u  название таблицы пользователей
- * $table_Name_u_i_g таблица совместимости групп и пользователй
- * 4 параметр группы используесться для рекурсивного вызова
- */
-  $path="https://api.vk.com/method/";
-  $MethodName='groups.get';
-  $parametrs['access_token']=$_SESSION['access_token'];
-
-         
-    $requst=new Request_to_vk($path,$MethodName, $parametrs);
-    $answer=$requst->push_request()
-                   ->get_answer();
-          
-    
-    if($answer->error||$groups==-1){
-               echo  ($answer->error)? $answer->error->error_msg:"";
-               return -1;
-           }
-       if(isset($answer->response->items)){
-      
-                  if(($parametrs['offset']+$parametrs['count'])<=$answer->response->count){
-                            $parametrs['offset']+=$parametrs['count'];
-                           $groups= $this->get_all_User_group ($connect,$table_Name_g,$table_Name_u_i_g,$parametrs,$groups);
-                       }
-                       
-                    foreach ($answer->response->items as $group)
-                    {
-                        if($group->type=='group'||$group->type=='event'||$group->type=='page'){
-                        $group->gid=$group->id;
-                        $groupVk=new VK_Community();
-                        $groupVk->setData($group);
-                        array_push($groups, $groupVk);
-                        $groupVk->save($connect,$table_Name_g);
-                        $this->save_Group($connect,$table_Name_u_i_g ,$groupVk->getGid());
-                        }
-                    }
-                   
-        }
-             
-        return $groups;
-     
- }
- 
  static public function get_all_Users($connection,$table_name){
      $query='SELECT * FROM '.$table_name;
      $execute= $connection->prepare($query);
@@ -250,22 +205,6 @@ public function save_Group($connection,$table_name,$group_id){
           }
         return $this;
  }
-public function get_count_pages_VK()
-{
-    $path="https://api.vk.com/method/";
-    $MethodName='users.getSubscriptions';
-    $Parametrs=array(
-        "user_id"    =>$this->uid,
-        "extended"   =>0,
-        'v'          =>5.28,
-       );
-    //запрос
-    $requst=new Request_to_vk($path,$MethodName, $Parametrs);
-    $answer=$requst->push_request()
-                   ->get_answer()->response;
-    
-    return (!!$answer->groups->count)?$answer->groups->count:0;
-}
  public function get_JSON($param=array()){
    $answer=array();
    $arr=array(

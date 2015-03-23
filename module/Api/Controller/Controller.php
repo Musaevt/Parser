@@ -21,6 +21,6 @@ class Controller extends AbstractController{
     }
     public function MethodAction(){
     $api=new Api(\Library\Application::$request_variables['post']['method_name'],\Library\Application::$request_variables['post']['data'],"json");
-    echo $api->send_request();
+    echo $api->send_request()->getResponse();
     }
 }

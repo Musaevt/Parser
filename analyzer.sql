@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS `Search` (
   `id` 					int(11) NOT NULL AUTO_INCREMENT,
   `id_community`    	int(11)    DEFAULT NULL,
   `done`			    BOOL DEFAULT false,
-  `date`		    	  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `date_start`		    	  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ `date_end`                      DATETIME NULL,
 
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -81,3 +82,8 @@ CREATE TABLE IF NOT EXISTS `Users_In_Communities` (
  ) ENGINE=MyISAM  CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
+
+
+TRUNCATE TABLE  `Community`;
+TRUNCATE TABLE  `Search`;
+TRUNCATE TABLE  `User`;

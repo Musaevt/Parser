@@ -18,6 +18,10 @@ return array(
              'ajax' => array(
                 'version' => '1',
                 'file' => '/st/js/ajax.js'
+            ),
+             'search' => array(
+                'version' => '1',
+                'file' => '/st/js/search.js'
             )
             
         ),

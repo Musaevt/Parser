@@ -2,6 +2,7 @@
 
 return array(
     'actions' => array(
+        'example'=>'example',//must delete
         'index' => 'index',
         'search'=>'search'
     ),
@@ -12,8 +13,8 @@ return array(
                 'description' => '<meta name="description" content="Анализ групп в контакте">'
             ),
             'script' => array(
-                'mainpage'
-               
+                'mainpage',
+            
             ),
             'css' => array(
                          

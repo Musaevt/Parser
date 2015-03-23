@@ -43,7 +43,6 @@ class Access_token{
           'redirect_uri'    =>self::$redirect_Uri,
            
     );
-  
     $requst=new Request_to_vk($url,$methodname, $parametrs);
     $obj=$requst->push_request()
                  ->get_answer();
@@ -52,6 +51,8 @@ class Access_token{
      {
         self::$access_token=$obj->access_token;
         self::$expires_in=$obj->expires_in;
+        Application::$request_variables['session']['access_token']=$obj->access_token;
+        Application::$request_variables['session']['expires_in']=$obj->expires_in;
         $_SESSION['access_token']=$obj->access_token;
         $_SESSION['expires_in']=$obj->expires_in;
         return TRUE;
@@ -63,28 +64,27 @@ class Access_token{
        
      }
      
-public function check_access_token(){
+public static function check_access_token(){
    $redirect='http://localhost'.Application::$request_variables['server']['REDIRECT_URL'];//временно при выгрузке на сервер изменить на верх!
    self::init($redirect);
-   Application::$request_variables['session']=$_SESSION;
-   if(!isset(self::$access_token)){
         if(!isset(Application::$request_variables['session']['access_token'])){
-            
-               //Получение code
-           if(!isset(Application::$request_variables['get']['code']))
-              self::get_code();
+            //Получение code
+           if(!isset(Application::$request_variables['get']['code'])){
+               $_SESSION=array_merge($_SESSION, $_GET);
+                self::get_code();
+           }
            else{  
               self::$code=Application::$request_variables['get']['code'];
               self::get_access_token();
                }
              }
          else{
-              self::$access_token=Application::$request_variables['session']['access_token'];
-              self::$expires_in=Application::$request_variables['session']['expires_in'];
+              self::$access_token= Application::$request_variables['session']['access_token'];
+              self::$expires_in=  Application::$request_variables['session']['expires_in'];
            }
      
-        }
        
+        
    }
   
 }

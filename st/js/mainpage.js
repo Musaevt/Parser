@@ -72,3 +72,22 @@ $('input.element_form').change(function(e){
       getAjax({method_name:"get_community_by_id_vk",data:{group_name:e.target.value}});
      
   });
+  
+  var start_searching=function(){
+     var data={community_id: $('input.element_form')[0].value}
+      $.ajax({
+                    async:  true,
+                    url:     "search/start", //Адрес подгружаемой страницы
+                    type:     "POST", //Тип запроса
+                    data:     data, 
+                    success:function(e){
+                    
+                    },
+                    error:function(e){
+                        console.log(e);
+                    }
+                   
+             });
+             
+  }
+  

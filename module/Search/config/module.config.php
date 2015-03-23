@@ -13,7 +13,7 @@ return array(
                 'description' => '<meta name="description" content="Анализ групп в контакте">'
             ),
             'script' => array(
-                
+                'search'               
                
             ),
             'css' => array(

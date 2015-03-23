@@ -29,6 +29,7 @@ return array(
             ),
             'script' => array(
                 'jquery',
+                'ajax'
                 
             ),
             'css' => array('styles'),

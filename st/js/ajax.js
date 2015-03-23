@@ -1,71 +1,53 @@
-var lineChartData;
+var Ajax = {_init:function() {
+  return this.createXmlHttpRequest();
+}, createXmlHttpRequest:function() {
+  var b;
+  try {
+    b = new ActiveXObject("Microsoft.XMLHTTP");
+  } catch (c) {
+    try {
+      b = new ActiveXObject("Msxml2.XMLHTTP");
+    } catch (a) {
+      b = !1;
+    }
+  }
+  b || "undefined" != typeof XMLHttpRequest && (b = new XMLHttpRequest);
+  b || (location.href = "http://twosphere.ru/badbrowser");
+  return b;
+}, post:function(b, c) {
+  var a = this._init();
+  a && (a.open("POST", b.url, !0), a.setRequestHeader("X-Requested-With", "XMLHttpRequest"), a.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"), a.send(Ajax.dataEncode(b.data)), a.onreadystatechange = function() {
+    if (4 == a.readyState && 200 == a.status) {
+      var b = $.parseJSON(a.responseText);
+      c(b);
+    }
+  });
+}, simple_get:function(b, c) {
+  var a = this._init();
+  a && (a.open("GET", b.url + "?" + Ajax.dataEncode(b.data), !0), a.setRequestHeader("X-Requested-With", "XMLHttpRequest"), a.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"), a.send(), a.onreadystatechange = function() {
+    4 == a.readyState && 200 == a.status && c(a.responseText);
+  });
+}, get:function(b, c) {
+  var a = this._init();
  
-var data={
-     function:'get_rating_groups',
-     without:['abbyymobile','club18763860']
-};
-        $.ajax({ // для краткости - jQuery
-             type:'POST',
-             url: '/index.php',
-             data:data,
-             dataType: "json",
-	     success:function(data){
-                 var lab=[];
-                 var uchastniki=[];
-                for (var i = 0; i < data.length; i++) {
-              lab[i]=data[i].name;
-              uchastniki[i]=parseInt(data[i].our_members)/parseInt(data[i].members_count);
-             }
-              lineChartData = {
-			labels : lab,
-			datasets : [
-				{
-					label: "My First dataset",
-					fillColor : "rgba(220,220,220,0.2)",
-					strokeColor : "rgba(220,220,220,1)",
-					pointColor : "rgba(220,220,220,1)",
-					pointStrokeColor : "#fff",
-					pointHighlightFill : "#fff",
-					pointHighlightStroke : "rgba(220,220,220,1)",
-					data : uchastniki
-				}
-			]
-                       
+  a && (a.open("GET", b.url + "?" + Ajax.dataEncode(b.data), !0), a.setRequestHeader("X-Requested-With", "XMLHttpRequest"), a.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"), a.send(null), a.onreadystatechange = function() {
+       if (4 == a.readyState && 200 == a.status) {
+       var b = $.parseJSON(a.responseText);
+      c(b);
+    }
+  })
+  return a;
+  
 
-		},
-                   getgraph();
-                },
-             error:  function(xhr, str){
-                    alert('Error conecting with server');
-                },
-        
-
-             cache: false
-
-            });
-            
-   
-  var getgraph = function(){
-					var ctx = document.getElementById("canvas").getContext("2d");
-					window.myLine = new Chart(ctx).Line(lineChartData, {
-						responsive: true
-					});};
- 
-var getAjax=function(requestData){
-     $.ajax({ // для краткости - jQuery
-             type:'POST',
-             url: '/api',
-             data:requestData,
-             dataType: "json",
-	     success:function(data){
-                 return data;
-             },
-               
-             error:  function(xhr, str){
-                    alert('Error conecting with server');
-                },
-        
-             cache: false
-
-            });
-}
+}, dataEncode:function(b) {
+  var c = "";
+  if (b) {
+    for (var a in b) {
+      b.hasOwnProperty(a) && (c += "&" + a.toString() + "=" + encodeURIComponent(b[a]));
+    }
+    if ("&" == c.charAt(0)) {
+      return c.substring(1, c.length);
+    }
+  }
+  return c;
+}};
