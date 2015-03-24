@@ -8,6 +8,8 @@ use Library\Models\Search;
 use Library\Models\Community;
 use Library\View;
 
+use Library\Models\Users_In_Communities;
+
 use Api\Models\Api;
 
 class Controller extends AbstractController{
@@ -44,15 +46,9 @@ class Controller extends AbstractController{
        
     }
     public function exampleAction(){
-        $date="";
-        $string= explode(".", $date);
-        $birhdate=new \DateTime();
-        switch (count($string)){
-        case 2: checkdate($string[1], $string[0], 1)?$birhdate->setDate(1, $string[1], $string[0]):0;break;
-        case 3: checkdate($string[1], $string[0], $string[2])?$birhdate->setDate( $string[2], $string[1], $string[0]):0;break;
-        default :$birhdate=null;break;
-    }
-    var_dump($birhdate->format('Y:m:d'));
+       $relation=new Users_In_Communities();
+       $relation->setData(['gid_community'=>312,'uid_user'=>213])->save();
+       var_dump($relation);
     
     }
 }

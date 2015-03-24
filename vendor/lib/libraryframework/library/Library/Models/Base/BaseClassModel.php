@@ -2,11 +2,16 @@
 namespace Library\Models\Base;
 use Library\Database;
 class BaseClassModel extends BaseClass{
-    
-   
+    public static $connection;
+    public static $table_names;
+         
+    public function __construct() {
+        self::$connection=Database::$connect;
+        self::$table_names=Database::$options['tables'];
+    }
   public function save($parametrs=NULL){
-    $connection=Database::$connect;
-    $table_names=Database::$options['tables'];
+    $connection=self::$connection;
+    $table_names= self::$table_names;
     $class_name= explode("\\", get_class($this));
     $class_name=$class_name[count($class_name)-1];
   
@@ -42,13 +47,13 @@ class BaseClassModel extends BaseClass{
             
         }
         $execute->execute();
-      
+        
        
-     return $this;       
+      return $this;       
 }
   public function update(){
-        $connection=Database::$connect;
-        $table_names=Database::$options['tables'];
+        $connection= self::$connection;
+        $table_names= self::$table_names;
        
         $class_name= explode("\\", get_class($this));
       $class_name=$class_name[count($class_name)-1];

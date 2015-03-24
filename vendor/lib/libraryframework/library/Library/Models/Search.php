@@ -7,10 +7,14 @@ class Search extends BaseClassModel {
     protected $id_community;
     protected $done;
     protected $date_start;
-   protected  $date_end;
+    protected  $date_end;
     
     
    public function __construct() {
+         parent::__construct();
+   }
+   
+   public function get_search_by_id(){
        
    }
     /*

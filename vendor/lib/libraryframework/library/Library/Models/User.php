@@ -102,7 +102,7 @@ class User extends \Library\Models\Base\BaseClassModel{
    protected  $about;
    protected  $date_update;
            function __construct(){
-    
+      parent::__construct();
  }
 
 

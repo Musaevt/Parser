@@ -89,6 +89,7 @@ class Search extends BaseClass {
                     foreach ($response as $group){
                        $community->setData($group)->save(array("gid","name","screen_name","is_closed","deactivated","type","photo_big","start_date","city","country","description","wiki_page","members_count","status","contacts","verified","site","date_update"));
                        $relations->setData(array('gid_community'=>$community->getGid(),'uid_user'=>$uid))->save();
+                       var_dump($relations);
                        array_push($gids['gids'], $community->getGid());
                               
                     }

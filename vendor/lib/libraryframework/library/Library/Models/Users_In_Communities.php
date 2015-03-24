@@ -1,7 +1,9 @@
 <?php
 namespace Library\Models;
-use  \Library\Models\Base\BaseClassModel;
+
+use Library\Models\Base\BaseClassModel;
 use Library\Database;
+
 class Users_In_Communities extends BaseClassModel{
    protected $id;
    protected $gid_community;
@@ -10,11 +12,13 @@ class Users_In_Communities extends BaseClassModel{
 
 
     public function __construct() {
-        
+          parent::__construct();
     }
    
-    static function get_count_ouruser_in_group($connection,$table,$gid){
-        $query="SELECT Count(*) FROM ".$table['table_Users_In_Groups']." WHERE `gid`=:gid";
+    static function get_count_ouruser_in_group($gid){
+        $connection=Database::$connect;
+        $table=  Database::$options['tables'];
+        $query="SELECT Count(*) FROM ".$table['Users_In_Communities']." WHERE `gid`=:gid";
         $execute=$connection->prepare($query);
         $execute->bindValue(":gid",$gid);
         $success=$execute->execute();

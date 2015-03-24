@@ -32,7 +32,7 @@ class Api extends BaseClass{
 
     private function get_rating_community(){
         $this->response=array();
-        $groups= Community::get_top_groups($connection, $tables, array('gid','name','screen_name','members_count'));
+        $groups= Community::get_top_groups(30, array('gid','name','screen_name','members_count'));
         foreach ($groups as $group)
         {
             if(isset($this->data['without'])){
@@ -41,7 +41,7 @@ class Api extends BaseClass{
                        $this_group=($without==$group->getScreen_name())?true:$this_group;
             if($this_group) continue;
             }
-           $count=Users_In_Groups::get_count_ouruser_in_group($connection, $tables, $group->getGid());
+           $count=Users_In_Groups::get_count_ouruser_in_group($group->getGid());
            $json=$group->get_JSON(array('our_members'=>$count));
            array_push($this->response, $json);
         }   

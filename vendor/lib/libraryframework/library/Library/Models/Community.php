@@ -2,6 +2,7 @@
 namespace Library\Models;
 
 use Library\Models\Base\BaseClassModel;
+use Library\Database;
 
 //sresial array for save in v >5.19
 //array("gid","name","screen_name","is_closed","deactivated","type","photo_big","start_date","city","country","description","wiki_page","members_count","status","contacts","verified","site","date_update");
@@ -28,7 +29,7 @@ protected $site;
 protected $date_update;//последнии обновление группы в БД
 
 function __construct(){
-    
+    parent::__construct();
  }
 
 public function setContacts($argument){
@@ -110,7 +111,9 @@ public static function get_All_Groups($connection,$table,$parametrs=array(),$fie
       
 }
 
-public static function get_top_groups($connection,$table,$fields=array()){
+public static function get_top_groups($count,$fields=array()){
+    $connection=Database::$connect;
+    $table=  Database::$options['tables'];
      $query="SELECT ";
              if(count($fields)==0)
              $query.="Groups.* ";
@@ -123,7 +126,7 @@ public static function get_top_groups($connection,$table,$fields=array()){
            . " LEFT OUTER JOIN ".$table['table_Users_In_Groups']." AS Members ON Groups.gid = Members.gid
               GROUP BY GROUPS.gid
               ORDER BY COUNT( GROUPS.gid ) DESC 
-              LIMIT 30";
+              LIMIT ".$count;
          
      $execute= $connection->prepare($query);
      $success=$execute->execute();
@@ -140,6 +143,11 @@ public static function get_top_groups($connection,$table,$fields=array()){
       }
       
       return $groups;
+}
+//gid param is gid from starting group
+public static function get_top_groups_by_percent($gid){
+    
+    
 }
 
 public function get_JSON($param=array()){

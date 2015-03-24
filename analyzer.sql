@@ -74,13 +74,13 @@ CREATE TABLE IF NOT EXISTS `User` (
 CREATE TABLE IF NOT EXISTS `Users_In_Communities` (
 
   `id` 				int(11) NOT NULL AUTO_INCREMENT,
-  `id_community`    int(11)      DEFAULT NULL,
-  `id_user`		    int(11)      DEFAULT NULL,
+  `gid_community`         int(11)      DEFAULT NULL,
+  `uid_user`		    int(11)      DEFAULT NULL,
   `date` 	   	  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   
-   PRIMARY KEY (`id`)
+   PRIMARY KEY (`id`),
+   UNIQUE (`gid_community`,`uid_user`)
  ) ENGINE=MyISAM  CHARSET=utf8 AUTO_INCREMENT=1 ;
-
 
 
 
