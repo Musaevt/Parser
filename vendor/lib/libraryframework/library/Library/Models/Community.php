@@ -33,8 +33,8 @@ function __construct(){
  }
 
 public function setContacts($argument){
-     $this->contacts=isset($argument[0])?(($argument[0]['user_id'])?$argument[0]['user_id']:0):0;
-}
+    $this->contacts=  is_numeric($argument)?$argument:(isset($argument[0]['user_id'])?$argument[0]['user_id']:0);
+ }
 public function setCountry($argument){
      $this->country=is_array($argument)?($argument['id'])?$argument['id']:NULL:$argument;
        
@@ -49,8 +49,16 @@ public function setWiki_page($argument){
     $this->wiki_page=$argument;
  }
 
+ public function get_by_id(){
+      $query="SELECT * FROM ".Database::$options['tables']['Community']." WHERE `gid`=".$this->gid." ORDER BY  `id` DESC  LIMIT 1";
+      $execute= Database::$connect->prepare($query);
+      $execute->execute();
+      $answer= $execute->fetchAll();
+      $this->setData($answer[0]);
+      return $this;
+ }
 
-public function get_all_Members($connection,$table){
+ public function get_all_Members($connection,$table){
     $query="SELECT Users.* "
    . "FROM ".$table['table_Users']." as Users LEFT OUTER JOIN ".$table['table_Users_In_Groups']." as Jointable "
    . "on Users.uid=Jointable.uid "
@@ -144,13 +152,9 @@ public static function get_top_groups($count,$fields=array()){
       
       return $groups;
 }
-//gid param is gid from starting group
-public static function get_top_groups_by_percent($gid){
-    
-    
-}
 
-public function get_JSON($param=array()){
+
+public function get_JSON($param=array(),$json=false){
    $answer=array();
    $arr=array(
        'gid'          =>(isset($this->gid))?$this->gid:"",
@@ -177,13 +181,13 @@ public function get_JSON($param=array()){
        foreach ($param as $value)
        {
            if(array_key_exists($value, $arr))
-              $arr[$value]=$arr[$value];
+              $answer[$value]=$arr[$value];
        }
         if(count($param)==0)
             $answer=$arr;
    
-      // return json_encode($arr,JSON_UNESCAPED_UNICODE);
-      return $answer;
+      return ($json)?json_encode($answer,JSON_UNESCAPED_UNICODE):$answer;
+   
 }
 
 }

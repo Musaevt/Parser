@@ -46,9 +46,9 @@ class Controller extends AbstractController{
        
     }
     public function exampleAction(){
-       $relation=new Users_In_Communities();
-       $relation->setData(['gid_community'=>312,'uid_user'=>213])->save();
-       var_dump($relation);
+      $api=new \Api\Models\Api('get_community_db',['community_id'=>49409679]);
+      $api->send_request();
+      
     
     }
 }

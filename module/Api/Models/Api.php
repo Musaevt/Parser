@@ -7,6 +7,7 @@ use Library\Models\Base\BaseClass;
 use Library\Models\Community;
 use Library\Models\User;
 use Library\Models\Users_In_Сommunity;
+use Library\Models\Search;
 
 class Api extends BaseClass{
     protected $method_name;
@@ -48,6 +49,32 @@ class Api extends BaseClass{
         return $this;
    }
    
+   /*
+    * for getting info from DB
+    */
+   private function  get_rating_communities_from_search_percent(){
+       if(!isset($this->data['search_id']))exit(json_encode (['error'=>'Haven`t search_id']));
+       $search=new Search();
+       $search->setId($this->data['search_id'])->get_by_id();
+       $answer=$search->get_by_percent(25);
+       echo json_encode($answer);
+    }
+    private function  get_rating_communities_from_search_count(){
+       if(!isset($this->data['search_id']))exit(json_encode (['error'=>'Haven`t search_id']));
+       $search=new Search();
+       $search->setId($this->data['search_id'])->get_by_id();
+       $answer=$search->get_by_count_members(25);
+       echo json_encode($answer);
+    }
+    private function get_community_db(){
+        if(!is_numeric($this->data['community_id']))exit(json_encode (['error'=>'Haven`t community_id or it`s not a number']));
+        $community=new Community();
+        $community->setGid($this->data['community_id'])->get_by_id();
+        echo $community->get_JSON([], true);
+    }
+
+    
+
     private function get_community_members(){
         /*param to data
         * group_id
