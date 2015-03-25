@@ -71,6 +71,8 @@ class Api extends BaseClass{
         $community=new Community();
         $community->setGid($this->data['community_id'])->get_by_id();
         echo $community->get_JSON([], true);
+        
+        
     }
 
     
