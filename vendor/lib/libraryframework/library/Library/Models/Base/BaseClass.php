@@ -2,7 +2,7 @@
 namespace Library\Models\Base;
 use Library\Database;
 class BaseClass {
-    
+   
    public function setData($data){
      foreach ($data as $key=>$argum){
        $method='set'.ucfirst($key);

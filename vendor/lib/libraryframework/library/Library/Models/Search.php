@@ -89,6 +89,27 @@ class Search extends BaseClassModel {
             $answer= $execute->fetchAll();
             return $answer;
     }
+    public function get_members_by_communities_count($count){
+            $query="SELECT COUNT(*) as communities_count,Users.* FROM `".Database::$options['tables']['Users_In_Communities']."` as connect
+                     LEFT OUTER JOIN 
+                     (SELECT u.* from  `".Database::$options['tables']['Users_In_Communities']."` as connect
+                     LEFT OUTER JOIN `".Database::$options['tables']['Community']."` as gr ON gr.gid=connect.gid_community
+                     LEFT OUTER JOIN `".Database::$options['tables']['User']."` as u ON u.uid=connect.uid_user
+                     WHERE connect.gid_community= :community_id ) as Users ON Users.uid=connect.uid_user
+ 
+                     LEFT OUTER JOIN `".Database::$options['tables']['Community']."` as gr ON gr.gid=connect.gid_community   
+
+                     GROUP BY Users.uid
+                     ORDER BY COUNT(Users.uid) DESC
+                     LIMIT :count ";
+         
+            $execute= Database::$connect->prepare($query);
+            $execute->bindValue(':community_id', $this->id_community,\PDO::PARAM_INT);        
+            $execute->bindValue(':count', $count,\PDO::PARAM_INT);        
+            $execute->execute();
+            $answer= $execute->fetchAll();
+            return $answer;
+    }
   
    
     

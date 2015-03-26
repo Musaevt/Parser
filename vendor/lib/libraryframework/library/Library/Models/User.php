@@ -132,26 +132,17 @@ public function setBdate($argument){
     }
    $this->bdate=($birhdate)?$birhdate->format('Y:m:d'):"";
 }
+public function get_by_id(){
+      $query="SELECT * FROM ".Database::$options['tables']['User']." WHERE `uid`=".$this->uid." ORDER BY  `id` DESC  LIMIT 1";
+      $execute= Database::$connect->prepare($query);
+      $execute->execute();
+      $answer= $execute->fetchAll();
+      $this->setData($answer[0]);
+      return $this;
+ }
 
 
-public function update($connection,$table_name){
-    $query='UPTATE '.$table_name.' SET ';
-       foreach($this as $key=>$value){
-           ($value)?$query.=$key=':'.$key.',':0;
-           }
-     
-         $query=substr($query,0,-1);
-         $query.=" WHERE `uid`=".$this->uid;
-        $execute= $connection->prepare($query);
-           foreach($this as $key=>$value){
-            ($value)?$execute->bindValue(':'.$key,$value):0;
-           }
-            $execute->execute();
- 
-     return 1;       
-           
-}
- static public function get_all_Users($connection,$table_name){
+static public function get_all_Users($connection,$table_name){
      $query='SELECT * FROM '.$table_name;
      $execute= $connection->prepare($query);
      $execute->execute();
@@ -185,26 +176,7 @@ public function update($connection,$table_name){
       $answer=$execute->fetchAll();
       return ($answer)?$answer[0]:0;     
  }
- public function Update_bd($connection,$table_name){
-     $set="";
-     foreach($this as $key=>$value){
-         $set.=$key."= :".$key.',';         
-     }
-      $set=substr($set,0,-1);
-           
-      $query='UPDATE '.$table_name.' SET '.$set.' WHERE `uid`='.$this->uid;
-     
-      $execute= $connection->prepare($query);
-      foreach($this as $key=>$value){
-        $execute->bindValue(':'.$key, $value==null?"":$value);         
-     }
-      $success=$execute->execute();
-       if(!$success){
-           $fail=$execute->errorInfo();
-           $fail[2]."</br>";
-          }
-        return $this;
- }
+
  public function get_JSON($param=array()){
    $answer=array();
    $arr=array(
@@ -242,11 +214,11 @@ public function update($connection,$table_name){
        foreach ($param as $value)
        {
            if(array_key_exists($value, $arr))
-              $arr[$value]=$arr[$value];
+              $answer[$value]=$arr[$value];
        }
         if(count($param)==0)
             $answer=$arr;
       
-      return $answer;
+      return json_encode($answer);
 }
 }

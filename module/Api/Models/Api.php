@@ -54,27 +54,61 @@ class Api extends BaseClass{
     */
    private function  get_rating_communities_from_search_percent(){
        if(!isset($this->data['search_id']))exit(json_encode (['error'=>'Haven`t search_id']));
+       if(!is_numeric($this->data['count']))exit (json_encode (['error'=>'haven`t count or it`s not a number']));
        $search=new Search();
        $search->setId($this->data['search_id'])->get_by_id();
-       $answer=$search->get_by_percent(25);
+       $answer=$search->get_by_percent($this->data['count']);
+       if(isset($this->data['fields'])){
+              $fields=explode(",",$this->data['fields']);
+              foreach($answer as $key=>$value)
+              $answer[$key]=array_intersect_key($answer[$key],  array_flip ($fields));
+          }
        echo json_encode($answer);
     }
     private function  get_rating_communities_from_search_count(){
        if(!isset($this->data['search_id']))exit(json_encode (['error'=>'Haven`t search_id']));
+       if(!is_numeric($this->data['count']))exit (json_encode (['error'=>'haven`t count or it`s not a number']));
        $search=new Search();
        $search->setId($this->data['search_id'])->get_by_id();
-       $answer=$search->get_by_count_members(25);
+       $answer=$search->get_by_count_members($this->data['count']);
+        if(isset($this->data['fields'])){
+              $fields=explode(",",$this->data['fields']);
+              foreach($answer as $key=>$value)
+              $answer[$key]=array_intersect_key($answer[$key],  array_flip ($fields));
+          }
        echo json_encode($answer);
     }
     private function get_community_db(){
         if(!is_numeric($this->data['community_id']))exit(json_encode (['error'=>'Haven`t community_id or it`s not a number']));
         $community=new Community();
         $community->setGid($this->data['community_id'])->get_by_id();
-        echo $community->get_JSON([], true);
-        
-        
+        $param=(isset($this->data['fields']))?explode(",",$this->data['fields']):[];
+        echo $community->get_JSON($param, true);
+    }
+    private function get_user_db(){
+        if(!is_numeric($this->data['user_id']))exit(json_encode (['error'=>'Haven`t user_id or it`s not a number']));
+        $user=new User();
+        $user->setUid($this->data['user_id'])->get_by_id();
+        $param=(isset($this->data['fields']))?explode(",",$this->data['fields']):[];
+        echo $user->get_JSON($param, true);
     }
 
+    private function get_rating_members(){
+          if(!isset($this->data['search_id']))exit(json_encode (['error'=>'Haven`t search_id']));
+          if(!is_numeric($this->data['count']))exit (json_encode (['error'=>'haven`t count or it`s not a number']));
+          $search=new Search();
+          $search->setId($this->data['search_id'])->get_by_id();
+          $answer=$search->get_members_by_communities_count($this->data['count']);
+          if(isset($this->data['fields']))
+          {
+              $fields=explode(",",$this->data['fields']);
+              foreach($answer as $key=>$value)
+              $answer[$key]=array_intersect_key($answer[$key],  array_flip ($fields));
+          }
+          echo json_encode($answer);
+       
+    }
+   
     
 
     private function get_community_members(){
