@@ -22,6 +22,14 @@ return array(
              'search' => array(
                 'version' => '1',
                 'file' => '/st/js/search.js'
+            ),
+            'results' => array(
+                'version' => '1',
+                'file' => '/st/js/results.js'
+            ),
+            'typeahead' => array(
+                'version' => '1',
+                'file' => '/st/js/typeahead.js'
             )
             
         ),

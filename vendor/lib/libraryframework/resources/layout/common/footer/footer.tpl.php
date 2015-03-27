@@ -1,4 +1,4 @@
-</div>  
+
 <footer class="bottom">
      <div class="footer_element">
          <a href="/">VK ANALIZE <sup>1.0</sup> </a>

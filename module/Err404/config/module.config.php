@@ -2,10 +2,8 @@
 
 return array(
     'actions' => array(
-        'example'=>'example',//must delete
-        'index' => 'index',
-        'search'=>'search'
-    ),
+          'index' => 'index',
+  ),
     'module_includes' => array(
         'merge' => array(
             'meta' => array(
@@ -13,24 +11,18 @@ return array(
                 'description' => '<meta name="description" content="Анализ групп в контакте">'
             ),
             'script' => array(
-                'mainpage',
-                'typeahead'
-            
-            ),
+              ),
             'css' => array(
                          
             ),
             'module_views' => array(
                 'content' => array(
-                'path' => 'index/main'
+                'path' => 'index/404'
               ),
-                'search'=>array(
-                'path'=>'index/search'
-                )
-            )
+           )
         ),
         'replace' => array(
-            'title' => 'Анализ групп в ВКонтаке'
+            'title' => 'Ошибка'
         )
     )
 );

@@ -42,7 +42,7 @@ class Search extends BaseClassModel {
      * return array of community + members_count(for every community)
      */
     public function get_by_percent($count){
-            $query=" SELECT  COUNT( gr.gid ) as our_members_count,gr.* from `".Database::$options['tables']['Users_In_Communities']."` as connect
+            $query=" SELECT COUNT( gr.gid )/members_count*100 as persent, COUNT( gr.gid ) as our_members_count,gr.* from `".Database::$options['tables']['Users_In_Communities']."` as connect
                      LEFT OUTER JOIN 
                      (SELECT u.* from  `".Database::$options['tables']['Users_In_Communities']."` as connect
                      LEFT OUTER JOIN `".Database::$options['tables']['Community']."` as gr ON gr.gid=connect.gid_community
@@ -54,12 +54,12 @@ class Search extends BaseClassModel {
                      WHERE gr.gid != :community_id
  
                      GROUP BY gr.gid 
-                     ORDER BY COUNT( gr.gid ) DESC
-                     LIMIT :count";
+                     ORDER BY persent DESC
+                     LIMIT :count ";
         
             $execute= Database::$connect->prepare($query);
             $execute->bindValue(':community_id', $this->id_community,\PDO::PARAM_INT);        
-            $execute->bindValue(':count', $count,\PDO::PARAM_INT);        
+            $execute->bindValue(':count', +$count,\PDO::PARAM_INT);        
             $execute->execute();
             $answer= $execute->fetchAll();
             return $answer;
@@ -84,7 +84,7 @@ class Search extends BaseClassModel {
         
             $execute= Database::$connect->prepare($query);
             $execute->bindValue(':community_id', $this->id_community,\PDO::PARAM_INT);        
-            $execute->bindValue(':count', $count,\PDO::PARAM_INT);        
+            $execute->bindValue(':count', +$count,\PDO::PARAM_INT);        
             $execute->execute();
             $answer= $execute->fetchAll();
             return $answer;
@@ -105,7 +105,7 @@ class Search extends BaseClassModel {
          
             $execute= Database::$connect->prepare($query);
             $execute->bindValue(':community_id', $this->id_community,\PDO::PARAM_INT);        
-            $execute->bindValue(':count', $count,\PDO::PARAM_INT);        
+            $execute->bindValue(':count', +$count,\PDO::PARAM_INT);        
             $execute->execute();
             $answer= $execute->fetchAll();
             return $answer;

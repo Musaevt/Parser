@@ -46,9 +46,8 @@ class Controller extends AbstractController{
        
     }
     public function exampleAction(){
-      $api=new \Api\Models\Api('get_rating_communities_from_search_count',['search_id'=>1,'count'=>5,'fields'=>'id,gid']);
+      $api=new \Api\Models\Api('groups_search',['string'=>'qqq','count'=>14]);
       $api->send_request();
-      
-    
+     
     }
 }

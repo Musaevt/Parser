@@ -3,20 +3,16 @@ namespace Api\Controller;
 
 use Library\AbstractController;
 use Library\Database;
+use Library\Application;
 use Api\Models\Api;
 
 class Controller extends AbstractController{
     
     public function IndexAction(){
-   //     var_dump($_SERVER);
-    //    C:/ATI/OpenServer/domains/localhost/vkparser
-   $connect= Database::init()->getConnection();
-   $connect->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
-   $connect->query("SET NAMES UTF8;");   
-   $tables= \Library\Application::$config['tables'];
-   
-   $api=new API($_,array('uid'=>'108397577'));
-   echo $api->send_request();
+ 
+   $data= Application::$request_variables['get'];
+   $api=new API($data['method_name'],$data);
+   echo $api->send_request()->getResponse();
 
     }
     public function MethodAction(){

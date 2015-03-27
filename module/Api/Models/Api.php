@@ -18,7 +18,7 @@ class Api extends BaseClass{
     static protected $ERROR='Api haven`t this method';
     
     
-    public function __construct($Method_Name,$data=array(),$Response_Type="") {
+    public function __construct($Method_Name,$data=array()) {
         $this->method_name=$Method_Name;
         $this->data=$data;
         $this->response_type=$Response_Type;
@@ -27,28 +27,11 @@ class Api extends BaseClass{
     public function send_request(){
         $Method_name= mb_strtolower($this->method_name);
         $this->response=method_exists($this,$Method_name)?$this->$Method_name()->response:self::$ERROR;
-        if($this->response_type=="json")$this->response=json_encode($this->response);
+     //   if($this->response_type=="json")$this->response=json_encode($this->response);
          return $this;
     }
 
-    private function get_rating_community(){
-        $this->response=array();
-        $groups= Community::get_top_groups(30, array('gid','name','screen_name','members_count'));
-        foreach ($groups as $group)
-        {
-            if(isset($this->data['without'])){
-            $this_group=false;
-                    foreach ($this->data['without'] as $without)
-                       $this_group=($without==$group->getScreen_name())?true:$this_group;
-            if($this_group) continue;
-            }
-           $count=Users_In_Groups::get_count_ouruser_in_group($group->getGid());
-           $json=$group->get_JSON(array('our_members'=>$count));
-           array_push($this->response, $json);
-        }   
-        return $this;
-   }
-   
+
    /*
     * for getting info from DB
     */
@@ -63,6 +46,7 @@ class Api extends BaseClass{
               foreach($answer as $key=>$value)
               $answer[$key]=array_intersect_key($answer[$key],  array_flip ($fields));
           }
+        
        echo json_encode($answer);
     }
     private function  get_rating_communities_from_search_count(){
@@ -88,7 +72,7 @@ class Api extends BaseClass{
     private function get_user_db(){
         if(!is_numeric($this->data['user_id']))exit(json_encode (['error'=>'Haven`t user_id or it`s not a number']));
         $user=new User();
-        $user->setUid($this->data['user_id'])->get_by_id();
+        $user->setUid($this->data['user_id'])->get_by_uid();
         $param=(isset($this->data['fields']))?explode(",",$this->data['fields']):[];
         echo $user->get_JSON($param, true);
     }
@@ -184,7 +168,7 @@ class Api extends BaseClass{
         $this->response=$answer;
         return $this;  
    }
-   
+      
    private function  groups_get_vk(){
        Access_token::check_access_token();
        (isset($this->data['offset']))?$this->data['offset']:$this->data['offset']=0;
@@ -227,6 +211,34 @@ class Api extends BaseClass{
          $this->response=array('error_code'=>$answer['error']['error_code'],'error_msg'=>$answer['error']['error_msg']);
         }else{
          $this->response=$answer['response'][0];
+        }
+    return $this;
+   }
+   
+   
+   //don`t use untill log in
+   private function groups_search(){
+        $callvk="https://api.vk.com/method/";
+        $MethodName='groups.search';
+        $string=  $this->data['string'];
+        $count=($this->data['count'])?$this->data['count']:10;
+        $token=(Access_token::$access_token)?Access_token::$access_token:exit('haven`t access token');
+         $Parametrs=array(
+            "q" =>  $string,
+            "count"   =>$count,
+            "access_token"   => $token,
+             "v"=>5.29,
+            );
+        //запрос
+        $req=new Request_to_vk($callvk, $MethodName,$Parametrs);
+        $answer=$req->push_request()
+                    ->get_answer();
+        $answer=  json_decode($answer,true);
+        var_dump($answer);
+        if(isset($answer['error'])){
+         $this->response=array('error_code'=>$answer['error']['error_code'],'error_msg'=>$answer['error']['error_msg']);
+        }else{
+         $this->response=$answer['response']['items'];
         }
     return $this;
    }

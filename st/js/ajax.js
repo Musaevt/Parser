@@ -33,13 +33,12 @@ var Ajax = {_init:function() {
   a && (a.open("GET", b.url + "?" + Ajax.dataEncode(b.data), !0), a.setRequestHeader("X-Requested-With", "XMLHttpRequest"), a.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"), a.send(null), a.onreadystatechange = function() {
        if (4 == a.readyState && 200 == a.status) {
        var b = $.parseJSON(a.responseText);
-      c(b);
+       c(b);
     }
   })
   return a;
-  
-
-}, dataEncode:function(b) {
+},
+dataEncode:function(b) {
   var c = "";
   if (b) {
     for (var a in b) {

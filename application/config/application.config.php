@@ -3,10 +3,11 @@
 return array(
     'modules' => array(
         'index'=>'Index',
+        'err404'=>'Err404',
         'api'=>'Api',
-        'search'=>'Search'
-      
-    ),
+        'search'=>'Search',
+        'results'=>'Results'
+        ),
     'module_options' => array(
         'module_path' => '/module'
     ),

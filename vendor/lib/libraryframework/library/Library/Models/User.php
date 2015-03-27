@@ -132,49 +132,13 @@ public function setBdate($argument){
     }
    $this->bdate=($birhdate)?$birhdate->format('Y:m:d'):"";
 }
-public function get_by_id(){
+public function get_by_uid(){
       $query="SELECT * FROM ".Database::$options['tables']['User']." WHERE `uid`=".$this->uid." ORDER BY  `id` DESC  LIMIT 1";
       $execute= Database::$connect->prepare($query);
       $execute->execute();
       $answer= $execute->fetchAll();
       $this->setData($answer[0]);
       return $this;
- }
-
-
-static public function get_all_Users($connection,$table_name){
-     $query='SELECT * FROM '.$table_name;
-     $execute= $connection->prepare($query);
-     $execute->execute();
-     $answers=$execute->fetchAll();
-     $users=array();
-     foreach($answers as $answer){
-         $user=new VK_User();
-         $user->setData($answer);
-         array_push($users,$user);
-         }
-         return $users;
- }
- public function get_id_is_not_parsed($connection,$table_name){
-      $query='SELECT `uid` FROM '.$table_name.' WHERE `is_parsed`= false LIMIT 1';
-      $execute= $connection->prepare($query);
-      $execute->execute();
-      $answer=$execute->fetchAll();
-      return (!!$answer)?+$answer[0]['uid']:0;     
- }
-  public function get_is_not_parsed($connection,$table_name){
-      $query='SELECT * FROM '.$table_name.' WHERE `is_parsed`= false LIMIT 1';
-      $execute= $connection->prepare($query);
-      $execute->execute();
-      $answer=$execute->fetchAll();
-      return ($answer)?$answer[0]:0;     
- }
- public function get_by_uid($connection,$table_name,$uid){
-      $query='SELECT * FROM '.$table_name.' WHERE `uid`='.$uid.' LIMIT 1';
-      $execute= $connection->prepare($query);
-      $execute->execute();
-      $answer=$execute->fetchAll();
-      return ($answer)?$answer[0]:0;     
  }
 
  public function get_JSON($param=array()){

@@ -2,7 +2,7 @@
     
     
     
-    <form id="param_search" method="GET" action="/search"  >
+        <form id="param_search" method="GET" action="/search">
        
        
              <div class="group">

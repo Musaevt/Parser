@@ -2,9 +2,8 @@
 
 return array(
     'actions' => array(
-        'example'=>'example',//must delete
         'index' => 'index',
-        'search'=>'search'
+        'show'=>'Show' 
     ),
     'module_includes' => array(
         'merge' => array(
@@ -13,9 +12,8 @@ return array(
                 'description' => '<meta name="description" content="Анализ групп в контакте">'
             ),
             'script' => array(
-                'mainpage',
-                'typeahead'
-            
+                   'chart',
+                   'results',
             ),
             'css' => array(
                          
@@ -24,8 +22,8 @@ return array(
                 'content' => array(
                 'path' => 'index/main'
               ),
-                'search'=>array(
-                'path'=>'index/search'
+             'show'=>array(
+                'path'=>'index/show'
                 )
             )
         ),
