@@ -42,19 +42,22 @@ class Search extends BaseClassModel {
      * return array of community + members_count(for every community)
      */
     public function get_by_percent($count){
-            $query=" SELECT COUNT( gr.gid )/members_count*100 as persent, COUNT( gr.gid ) as our_members_count,gr.* from `".Database::$options['tables']['Users_In_Communities']."` as connect
-                     LEFT OUTER JOIN 
-                     (SELECT u.* from  `".Database::$options['tables']['Users_In_Communities']."` as connect
-                     LEFT OUTER JOIN `".Database::$options['tables']['Community']."` as gr ON gr.gid=connect.gid_community
-                     LEFT OUTER JOIN `".Database::$options['tables']['User']."` as u ON u.uid=connect.uid_user
-                     WHERE connect.gid_community= :community_id ) as Users ON Users.uid=connect.uid_user
- 
-                     LEFT OUTER JOIN `".Database::$options['tables']['Community']."` as gr ON gr.gid=connect.gid_community   
- 
-                     WHERE gr.gid != :community_id
- 
-                     GROUP BY gr.gid 
-                     ORDER BY persent DESC
+            $query="    SELECT Groups. * , groups_ids.counts / Groups.members_count AS persent
+                        FROM (  SELECT COUNT( connect.gid_community ) AS counts, connect. * 
+                                FROM  `Users_In_Communities` AS connect
+                                INNER JOIN (
+                                            SELECT u. * 
+                                            FROM  `".Database::$options['tables']['Users_In_Communities']."` AS connect
+                                            LEFT OUTER JOIN  `".Database::$options['tables']['Community']."` AS gr ON gr.gid = connect.gid_community
+                                            LEFT OUTER JOIN  `".Database::$options['tables']['User']."` AS u ON u.uid = connect.uid_user
+                                            WHERE connect.gid_community =:community_id  ) AS Users ON Users.uid = connect.uid_user
+                                GROUP BY connect.gid_community
+                                ORDER BY counts DESC ) AS groups_ids
+                        INNER JOIN  `".Database::$options['tables']['Community']."` AS Groups ON Groups.gid = groups_ids.gid_community
+                        WHERE groups_ids.gid_community <> :community_id
+                        AND   groups_ids.counts / Groups.members_count <=1
+                        AND   Groups.members_count >= 5
+                        ORDER BY persent DESC 
                      LIMIT :count ";
         
             $execute= Database::$connect->prepare($query);
@@ -67,19 +70,17 @@ class Search extends BaseClassModel {
     
     
     public function get_by_count_members($count){
-         $query=" SELECT gr.* from `".Database::$options['tables']['Users_In_Communities']."` as connect
-                     LEFT OUTER JOIN 
-                     (SELECT u.* from  `".Database::$options['tables']['Users_In_Communities']."` as connect
-                     LEFT OUTER JOIN `".Database::$options['tables']['Community']."` as gr ON gr.gid=connect.gid_community
-                     LEFT OUTER JOIN `".Database::$options['tables']['User']."` as u ON u.uid=connect.uid_user
-                     WHERE connect.gid_community= :community_id ) as Users ON Users.uid=connect.uid_user
- 
-                     LEFT OUTER JOIN `".Database::$options['tables']['Community']."` as gr ON gr.gid=connect.gid_community   
- 
-                     WHERE gr.gid != :community_id
- 
-                     GROUP BY gr.gid 
-                     ORDER BY gr.members_count  DESC
+         $query="    SELECT groups.* FROM
+                            (SELECT  connect.gid_community
+                            FROM  `Users_In_Communities` AS connect
+                            INNER JOIN (    SELECT u . * 
+                                            FROM  `".Database::$options['tables']['Users_In_Communities']."` AS connect
+                                            LEFT OUTER JOIN  `".Database::$options['tables']['Community']."` AS gr ON gr.gid = connect.gid_community
+                                            LEFT OUTER JOIN  `".Database::$options['tables']['User']."` AS u ON u.uid = connect.uid_user
+                                            WHERE connect.gid_community =:community_id  ) AS Users ON Users.uid = connect.uid_user
+                             GROUP BY connect.gid_community  ) as groups_id
+                     INNER JOIN `".Database::$options['tables']['Community']."` AS groups ON groups.gid = groups_id.gid_community
+                     ORDER BY groups.members_count DESC
                      LIMIT :count";
         
             $execute= Database::$connect->prepare($query);
@@ -90,17 +91,15 @@ class Search extends BaseClassModel {
             return $answer;
     }
     public function get_members_by_communities_count($count){
-            $query="SELECT COUNT(*) as communities_count,Users.* FROM `".Database::$options['tables']['Users_In_Communities']."` as connect
-                     LEFT OUTER JOIN 
-                     (SELECT u.* from  `".Database::$options['tables']['Users_In_Communities']."` as connect
-                     LEFT OUTER JOIN `".Database::$options['tables']['Community']."` as gr ON gr.gid=connect.gid_community
-                     LEFT OUTER JOIN `".Database::$options['tables']['User']."` as u ON u.uid=connect.uid_user
-                     WHERE connect.gid_community= :community_id ) as Users ON Users.uid=connect.uid_user
- 
-                     LEFT OUTER JOIN `".Database::$options['tables']['Community']."` as gr ON gr.gid=connect.gid_community   
-
-                     GROUP BY Users.uid
-                     ORDER BY COUNT(Users.uid) DESC
+            $query="SELECT Count(Users.uid) as communities_count , Users.*
+                    FROM (SELECT u. * 
+                                FROM  `".Database::$options['tables']['Users_In_Communities']."` AS connect
+                                LEFT OUTER JOIN  `".Database::$options['tables']['Community']."` AS gr ON gr.gid = connect.gid_community
+                                LEFT OUTER JOIN  `".Database::$options['tables']['User']."` AS u ON u.uid = connect.uid_user
+                                WHERE connect.gid_community = :community_id  ) AS Users
+                    INNER JOIN `".Database::$options['tables']['Users_In_Communities']."` AS connect ON connect.uid_user= Users.uid
+                    GROUP BY Users.uid
+                    ORDER BY communities_count DESC 
                      LIMIT :count ";
          
             $execute= Database::$connect->prepare($query);

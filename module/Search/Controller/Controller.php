@@ -56,7 +56,7 @@ class Controller extends AbstractController{
         
             $search_model= new Search_model();
             $search_model->setData(array('id_community'=>$search->answer->getGid()))->get_by_id_community();
-           
+         
             $search->get_members_of_community()->get_users_communities();
            
            

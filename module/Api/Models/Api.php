@@ -108,7 +108,7 @@ class Api extends BaseClass{
          $response=json_decode($this->response,true);
          $members= array_merge($members, $response['response']['users']);
        }
-       $this->response=  $members;
+       $this->response= json_encode($members);
       
        return $this;
        
@@ -139,7 +139,7 @@ class Api extends BaseClass{
         
          $groups= array_merge($groups, $response['response']['items']);
        }
-       $this->response=  $groups;
+       $this->response= json_encode($groups);
       }
       else{
           $this->response=NULL;
@@ -208,9 +208,9 @@ class Api extends BaseClass{
                     ->get_answer();
         $answer=  json_decode($answer,true);
         if(isset($answer['error'])){
-         $this->response=array('error_code'=>$answer['error']['error_code'],'error_msg'=>$answer['error']['error_msg']);
+         $this->response=  json_encode(array('error_code'=>$answer['error']['error_code'],'error_msg'=>$answer['error']['error_msg']));
         }else{
-         $this->response=$answer['response'][0];
+         $this->response=  json_encode($answer['response'][0]);
         }
     return $this;
    }

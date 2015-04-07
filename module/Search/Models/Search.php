@@ -21,7 +21,7 @@ class Search extends BaseClass {
      $community_info=$community_info->send_request()->getResponse();
   
      $community=new Community();
-     $this->answer=$community->setData($community_info)->save();
+     $this->answer=$community->setData(json_decode($community_info),true)->save();
      return $this;
     }
     /*
@@ -42,7 +42,7 @@ class Search extends BaseClass {
          $user=new User();
          $relations=new Users_In_Communities();
          $data=array('group_name'=>$this->param['community_id']);
-         $users_info= new Api('get_community_members',$data,"json");
+         $users_info= new Api('get_community_members',$data);
          $user_uids['uids']=array();
          
         $count=NULL;
@@ -54,7 +54,7 @@ class Search extends BaseClass {
              $response=json_decode($users_info->getResponse(),TRUE);
              $count=is_array($response)?count($response['response']):(array)$response->response->count;
              $members= is_array($response)?$response:(array)$response->response->users;
-             foreach($members as $member){
+              foreach($members as $member){
                 $user->setData($member)->save();
                 $relations->setData(array('gid_community'=>$this->param['community_id'],'uid_user'=>$user->getUid()))->save();
                 array_push($user_uids['uids'], $user->getUid());
@@ -82,7 +82,7 @@ class Search extends BaseClass {
          
          foreach($this->answer['uids'] as $uid){
                 $data=array('uid'=>$uid,'max_count'=>700);
-                $communities_info= new Api('get_user_community',$data,"json");
+                $communities_info= new Api('get_user_community',$data);
                 $communities_info->send_request();
                 $response=json_decode($communities_info->getResponse(),TRUE);
                 if(is_array($response)){

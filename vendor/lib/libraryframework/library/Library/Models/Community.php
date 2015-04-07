@@ -33,7 +33,10 @@ function __construct(){
  }
 
 public function setContacts($argument){
+    if(!is_object($argument[0])||is_numeric($argument))
     $this->contacts=  is_numeric($argument)?$argument:(isset($argument[0]['user_id'])?$argument[0]['user_id']:0);
+    else
+      $this->contacts=  $argument[0]->user_id;   
  }
 public function setCountry($argument){
      $this->country=is_array($argument)?($argument['id'])?$argument['id']:NULL:$argument;

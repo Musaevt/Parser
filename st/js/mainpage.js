@@ -4,14 +4,7 @@ $(document).ready(function(){
     placeholder=  $('img.element_form')[0].src;
     
  
-var communities=new Bloodhound({
-    datumTokenizer:Bloodhound.tokenizers.obj.whitespace(),
-    queryTokenizer:Bloodhound.tokenizers.whitespace,
-    remote:''
-})
-communities.initialize();
 
-    
 
 
 
