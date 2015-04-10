@@ -41,7 +41,9 @@ class Search extends BaseClassModel {
      * get members groups rating.From most popular(count of our members)->less popular
      * return array of community + members_count(for every community)
      */
-    public function get_by_percent($count){
+  
+    /* OLD VERSION
+     * public function get_by_percent($count){
             $query="    SELECT Groups. * , groups_ids.counts / Groups.members_count AS persent
                         FROM (  SELECT COUNT( connect.gid_community ) AS counts, connect. * 
                                 FROM  `Users_In_Communities` AS connect
@@ -72,7 +74,7 @@ class Search extends BaseClassModel {
     public function get_by_count_members($count){
          $query="    SELECT groups.* FROM
                             (SELECT  connect.gid_community
-                            FROM  `Users_In_Communities` AS connect
+                            FROM  `".Database::$options['tables']['Users_In_Communities']."` AS connect
                             INNER JOIN (    SELECT u . * 
                                             FROM  `".Database::$options['tables']['Users_In_Communities']."` AS connect
                                             LEFT OUTER JOIN  `".Database::$options['tables']['Community']."` AS gr ON gr.gid = connect.gid_community
@@ -104,6 +106,71 @@ class Search extends BaseClassModel {
          
             $execute= Database::$connect->prepare($query);
             $execute->bindValue(':community_id', $this->id_community,\PDO::PARAM_INT);        
+            $execute->bindValue(':count', +$count,\PDO::PARAM_INT);        
+            $execute->execute();
+            $answer= $execute->fetchAll();
+            return $answer;
+    }
+     * 
+     */
+    
+    /*for new DB where every search answrers is in new table Users_In_Communities_*(search id)
+     * 
+     */
+      public function get_by_percent($count){
+            $query="    SELECT Groups. * , groups_ids.counts / Groups.members_count AS persent
+                        FROM (
+                            SELECT COUNT( connect.gid_community ) AS counts, connect. * 
+                            FROM  `".Database::$options['tables']['Users_In_Communities']."` AS connect
+                            GROUP BY connect.gid_community
+                            ORDER BY counts DESC
+                        ) AS groups_ids
+                        INNER JOIN   `".Database::$options['tables']['Community']."` AS Groups ON Groups.gid = groups_ids.gid_community
+                        WHERE groups_ids.gid_community <> :community_id
+                        AND groups_ids.counts / Groups.members_count <=1
+                        AND Groups.members_count >=5
+                        ORDER BY persent DESC 
+                        LIMIT :count ";
+        
+            $execute= Database::$connect->prepare($query);
+            $execute->bindValue(':community_id', $this->id_community,\PDO::PARAM_INT);        
+            $execute->bindValue(':count', +$count,\PDO::PARAM_INT);        
+            $execute->execute();
+            $answer= $execute->fetchAll();
+            return $answer;
+     }
+       public function get_by_count_members($count){
+             $query="   SELECT Groups. * ,groups_ids.counts
+                        FROM (
+                            SELECT COUNT( connect.gid_community ) AS counts, connect. * 
+                            FROM  `".Database::$options['tables']['Users_In_Communities']."` AS connect
+                            WHERE connect.gid_community <> :community_id
+                            GROUP BY connect.gid_community
+                            ORDER BY counts DESC
+                            LIMIT :count
+                        ) AS groups_ids
+                        INNER JOIN  `".Database::$options['tables']['Community']."` AS Groups ON Groups.gid = groups_ids.gid_community
+                     ";
+        
+            $execute= Database::$connect->prepare($query);
+            $execute->bindValue(':community_id', $this->id_community,\PDO::PARAM_INT);        
+            $execute->bindValue(':count', +$count,\PDO::PARAM_INT);        
+            $execute->execute();
+            $answer= $execute->fetchAll();
+            return $answer;
+           
+           
+       }
+         public function get_members_by_communities_count($count){
+            $query="SELECT   users.*,users_need.communities_count   FROM
+						(SELECT Count(connect.uid_user) as communities_count,connect.uid_user as `uid` 
+                               		         FROM   `".Database::$options['tables']['Users_In_Communities']."` AS connect
+                                                 GROUP BY connect.uid_user
+                                                  ORDER BY communities_count DESC 
+                                                  LIMIT :count) as `users_need`
+                     Inner JOIN  `".Database::$options['tables']['User']."` as users ON users.uid=users_need.uid";
+         
+            $execute= Database::$connect->prepare($query);
             $execute->bindValue(':count', +$count,\PDO::PARAM_INT);        
             $execute->execute();
             $answer= $execute->fetchAll();

@@ -12,7 +12,7 @@ $(document).ready(function(){
 		})});
     a=Ajax.get({url:"/api",data:{method_name:'get_rating_communities_from_search_count',search_id:search_id,count:10}},function(a){
         
-       var data= lineChartData(a,'screen_name','members_count','graph');
+       var data= lineChartData(a,'screen_name','counts','graph');
        var ctx = document.getElementById("count").getContext("2d");
 		window.myLine = new Chart(ctx).Line(data, {
 			responsive: true
